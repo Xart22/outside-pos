@@ -109,7 +109,26 @@ const TransactionsSchema = CollectionSchema(
   deserializeProp: _transactionsDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'user': LinkSchema(
+      id: -1682801719859031658,
+      name: r'user',
+      target: r'User',
+      single: true,
+    ),
+    r'promos': LinkSchema(
+      id: 7492986649907117899,
+      name: r'promos',
+      target: r'Promos',
+      single: true,
+    ),
+    r'transactionDetails': LinkSchema(
+      id: -7937389078150873987,
+      name: r'transactionDetails',
+      target: r'TransactionDetails',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _transactionsGetId,
   getLinks: _transactionsGetLinks,
@@ -290,12 +309,16 @@ Id _transactionsGetId(Transactions object) {
 }
 
 List<IsarLinkBase<dynamic>> _transactionsGetLinks(Transactions object) {
-  return [];
+  return [object.user, object.promos, object.transactionDetails];
 }
 
 void _transactionsAttach(
     IsarCollection<dynamic> col, Id id, Transactions object) {
   object.id = id;
+  object.user.attach(col, col.isar.collection<User>(), r'user', id);
+  object.promos.attach(col, col.isar.collection<Promos>(), r'promos', id);
+  object.transactionDetails.attach(col,
+      col.isar.collection<TransactionDetails>(), r'transactionDetails', id);
 }
 
 extension TransactionsQueryWhereSort
@@ -2500,7 +2523,48 @@ extension TransactionsQueryObject
     on QueryBuilder<Transactions, Transactions, QFilterCondition> {}
 
 extension TransactionsQueryLinks
-    on QueryBuilder<Transactions, Transactions, QFilterCondition> {}
+    on QueryBuilder<Transactions, Transactions, QFilterCondition> {
+  QueryBuilder<Transactions, Transactions, QAfterFilterCondition> user(
+      FilterQuery<User> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'user');
+    });
+  }
+
+  QueryBuilder<Transactions, Transactions, QAfterFilterCondition> userIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'user', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Transactions, Transactions, QAfterFilterCondition> promos(
+      FilterQuery<Promos> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'promos');
+    });
+  }
+
+  QueryBuilder<Transactions, Transactions, QAfterFilterCondition>
+      promosIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'promos', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Transactions, Transactions, QAfterFilterCondition>
+      transactionDetails(FilterQuery<TransactionDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'transactionDetails');
+    });
+  }
+
+  QueryBuilder<Transactions, Transactions, QAfterFilterCondition>
+      transactionDetailsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'transactionDetails', 0, true, 0, true);
+    });
+  }
+}
 
 extension TransactionsQuerySortBy
     on QueryBuilder<Transactions, Transactions, QSortBy> {

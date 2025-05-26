@@ -1,4 +1,7 @@
 import 'package:isar/isar.dart';
+import 'package:pos_getx/app/data/model/promos.dart';
+import 'package:pos_getx/app/data/model/transaction_details.dart';
+import 'package:pos_getx/app/data/model/user.dart';
 
 part 'transactions.g.dart';
 
@@ -22,4 +25,8 @@ class Transactions {
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
+
+  final user = IsarLink<User>();
+  final promos = IsarLink<Promos>();
+  final transactionDetails = IsarLink<TransactionDetails>();
 }

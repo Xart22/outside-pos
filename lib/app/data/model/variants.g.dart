@@ -39,7 +39,14 @@ const VariantsSchema = CollectionSchema(
   deserializeProp: _variantsDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'variantOptions': LinkSchema(
+      id: 8726573072062215589,
+      name: r'variantOptions',
+      target: r'VariantsOptions',
+      single: false,
+    )
+  },
   embeddedSchemas: {},
   getId: _variantsGetId,
   getLinks: _variantsGetLinks,
@@ -110,11 +117,13 @@ Id _variantsGetId(Variants object) {
 }
 
 List<IsarLinkBase<dynamic>> _variantsGetLinks(Variants object) {
-  return [];
+  return [object.variantOptions];
 }
 
 void _variantsAttach(IsarCollection<dynamic> col, Id id, Variants object) {
   object.id = id;
+  object.variantOptions.attach(
+      col, col.isar.collection<VariantsOptions>(), r'variantOptions', id);
 }
 
 extension VariantsQueryWhereSort on QueryBuilder<Variants, Variants, QWhere> {
@@ -535,7 +544,68 @@ extension VariantsQueryObject
     on QueryBuilder<Variants, Variants, QFilterCondition> {}
 
 extension VariantsQueryLinks
-    on QueryBuilder<Variants, Variants, QFilterCondition> {}
+    on QueryBuilder<Variants, Variants, QFilterCondition> {
+  QueryBuilder<Variants, Variants, QAfterFilterCondition> variantOptions(
+      FilterQuery<VariantsOptions> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'variantOptions');
+    });
+  }
+
+  QueryBuilder<Variants, Variants, QAfterFilterCondition>
+      variantOptionsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variantOptions', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Variants, Variants, QAfterFilterCondition>
+      variantOptionsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variantOptions', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Variants, Variants, QAfterFilterCondition>
+      variantOptionsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variantOptions', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Variants, Variants, QAfterFilterCondition>
+      variantOptionsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variantOptions', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Variants, Variants, QAfterFilterCondition>
+      variantOptionsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variantOptions', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Variants, Variants, QAfterFilterCondition>
+      variantOptionsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'variantOptions', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension VariantsQuerySortBy on QueryBuilder<Variants, Variants, QSortBy> {
   QueryBuilder<Variants, Variants, QAfterSortBy> sortByName() {

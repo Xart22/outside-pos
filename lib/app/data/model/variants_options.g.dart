@@ -9,13 +9,13 @@ part of 'variants_options.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetVariantOptionsCollection on Isar {
-  IsarCollection<VariantOptions> get variantOptions => this.collection();
+extension GetVariantsOptionsCollection on Isar {
+  IsarCollection<VariantsOptions> get variantsOptions => this.collection();
 }
 
-const VariantOptionsSchema = CollectionSchema(
-  name: r'VariantOptions',
-  id: -434192244069397888,
+const VariantsOptionsSchema = CollectionSchema(
+  name: r'VariantsOptions',
+  id: 2364011242110389799,
   properties: {
     r'name': PropertySchema(
       id: 0,
@@ -33,22 +33,29 @@ const VariantOptionsSchema = CollectionSchema(
       type: IsarType.long,
     )
   },
-  estimateSize: _variantOptionsEstimateSize,
-  serialize: _variantOptionsSerialize,
-  deserialize: _variantOptionsDeserialize,
-  deserializeProp: _variantOptionsDeserializeProp,
+  estimateSize: _variantsOptionsEstimateSize,
+  serialize: _variantsOptionsSerialize,
+  deserialize: _variantsOptionsDeserialize,
+  deserializeProp: _variantsOptionsDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'variants': LinkSchema(
+      id: -1346824501966887497,
+      name: r'variants',
+      target: r'Variants',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
-  getId: _variantOptionsGetId,
-  getLinks: _variantOptionsGetLinks,
-  attach: _variantOptionsAttach,
+  getId: _variantsOptionsGetId,
+  getLinks: _variantsOptionsGetLinks,
+  attach: _variantsOptionsAttach,
   version: '3.1.0+1',
 );
 
-int _variantOptionsEstimateSize(
-  VariantOptions object,
+int _variantsOptionsEstimateSize(
+  VariantsOptions object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -68,8 +75,8 @@ int _variantOptionsEstimateSize(
   return bytesCount;
 }
 
-void _variantOptionsSerialize(
-  VariantOptions object,
+void _variantsOptionsSerialize(
+  VariantsOptions object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -79,13 +86,13 @@ void _variantOptionsSerialize(
   writer.writeLong(offsets[2], object.variantId);
 }
 
-VariantOptions _variantOptionsDeserialize(
+VariantsOptions _variantsOptionsDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = VariantOptions();
+  final object = VariantsOptions();
   object.id = id;
   object.name = reader.readStringOrNull(offsets[0]);
   object.price = reader.readStringOrNull(offsets[1]);
@@ -93,7 +100,7 @@ VariantOptions _variantOptionsDeserialize(
   return object;
 }
 
-P _variantOptionsDeserializeProp<P>(
+P _variantsOptionsDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -111,31 +118,32 @@ P _variantOptionsDeserializeProp<P>(
   }
 }
 
-Id _variantOptionsGetId(VariantOptions object) {
+Id _variantsOptionsGetId(VariantsOptions object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _variantOptionsGetLinks(VariantOptions object) {
-  return [];
+List<IsarLinkBase<dynamic>> _variantsOptionsGetLinks(VariantsOptions object) {
+  return [object.variants];
 }
 
-void _variantOptionsAttach(
-    IsarCollection<dynamic> col, Id id, VariantOptions object) {
+void _variantsOptionsAttach(
+    IsarCollection<dynamic> col, Id id, VariantsOptions object) {
   object.id = id;
+  object.variants.attach(col, col.isar.collection<Variants>(), r'variants', id);
 }
 
-extension VariantOptionsQueryWhereSort
-    on QueryBuilder<VariantOptions, VariantOptions, QWhere> {
-  QueryBuilder<VariantOptions, VariantOptions, QAfterWhere> anyId() {
+extension VariantsOptionsQueryWhereSort
+    on QueryBuilder<VariantsOptions, VariantsOptions, QWhere> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension VariantOptionsQueryWhere
-    on QueryBuilder<VariantOptions, VariantOptions, QWhereClause> {
-  QueryBuilder<VariantOptions, VariantOptions, QAfterWhereClause> idEqualTo(
+extension VariantsOptionsQueryWhere
+    on QueryBuilder<VariantsOptions, VariantsOptions, QWhereClause> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterWhereClause> idEqualTo(
       Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -145,8 +153,8 @@ extension VariantOptionsQueryWhere
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -168,9 +176,8 @@ extension VariantOptionsQueryWhere
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -178,7 +185,7 @@ extension VariantOptionsQueryWhere
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterWhereClause> idLessThan(
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterWhereClause> idLessThan(
       Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
@@ -188,7 +195,7 @@ extension VariantOptionsQueryWhere
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterWhereClause> idBetween(
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -205,9 +212,9 @@ extension VariantOptionsQueryWhere
   }
 }
 
-extension VariantOptionsQueryFilter
-    on QueryBuilder<VariantOptions, VariantOptions, QFilterCondition> {
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+extension VariantsOptionsQueryFilter
+    on QueryBuilder<VariantsOptions, VariantsOptions, QFilterCondition> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -216,7 +223,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -225,8 +232,8 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition> idEqualTo(
-      Id? value) {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -235,7 +242,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       idGreaterThan(
     Id? value, {
     bool include = false,
@@ -249,7 +256,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       idLessThan(
     Id? value, {
     bool include = false,
@@ -263,7 +270,8 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition> idBetween(
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
+      idBetween(
     Id? lower,
     Id? upper, {
     bool includeLower = true,
@@ -280,7 +288,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -289,7 +297,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -298,7 +306,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameEqualTo(
     String? value, {
     bool caseSensitive = true,
@@ -312,7 +320,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameGreaterThan(
     String? value, {
     bool include = false,
@@ -328,7 +336,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameLessThan(
     String? value, {
     bool include = false,
@@ -344,7 +352,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameBetween(
     String? lower,
     String? upper, {
@@ -364,7 +372,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -378,7 +386,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -392,7 +400,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -403,7 +411,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -414,7 +422,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -424,7 +432,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -434,7 +442,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -443,7 +451,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -452,7 +460,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceEqualTo(
     String? value, {
     bool caseSensitive = true,
@@ -466,7 +474,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceGreaterThan(
     String? value, {
     bool include = false,
@@ -482,7 +490,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceLessThan(
     String? value, {
     bool include = false,
@@ -498,7 +506,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceBetween(
     String? lower,
     String? upper, {
@@ -518,7 +526,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -532,7 +540,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -546,7 +554,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -557,7 +565,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -568,7 +576,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -578,7 +586,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       priceIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -588,7 +596,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       variantIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -597,7 +605,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       variantIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -606,7 +614,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       variantIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -616,7 +624,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       variantIdGreaterThan(
     int? value, {
     bool include = false,
@@ -630,7 +638,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       variantIdLessThan(
     int? value, {
     bool include = false,
@@ -644,7 +652,7 @@ extension VariantOptionsQueryFilter
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterFilterCondition>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
       variantIdBetween(
     int? lower,
     int? upper, {
@@ -663,45 +671,62 @@ extension VariantOptionsQueryFilter
   }
 }
 
-extension VariantOptionsQueryObject
-    on QueryBuilder<VariantOptions, VariantOptions, QFilterCondition> {}
+extension VariantsOptionsQueryObject
+    on QueryBuilder<VariantsOptions, VariantsOptions, QFilterCondition> {}
 
-extension VariantOptionsQueryLinks
-    on QueryBuilder<VariantOptions, VariantOptions, QFilterCondition> {}
+extension VariantsOptionsQueryLinks
+    on QueryBuilder<VariantsOptions, VariantsOptions, QFilterCondition> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
+      variants(FilterQuery<Variants> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'variants');
+    });
+  }
 
-extension VariantOptionsQuerySortBy
-    on QueryBuilder<VariantOptions, VariantOptions, QSortBy> {
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> sortByName() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterFilterCondition>
+      variantsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variants', 0, true, 0, true);
+    });
+  }
+}
+
+extension VariantsOptionsQuerySortBy
+    on QueryBuilder<VariantsOptions, VariantsOptions, QSortBy> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
+      sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> sortByPrice() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy> sortByPrice() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'price', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> sortByPriceDesc() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
+      sortByPriceDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'price', Sort.desc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> sortByVariantId() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
+      sortByVariantId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'variantId', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
       sortByVariantIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'variantId', Sort.desc);
@@ -709,51 +734,54 @@ extension VariantOptionsQuerySortBy
   }
 }
 
-extension VariantOptionsQuerySortThenBy
-    on QueryBuilder<VariantOptions, VariantOptions, QSortThenBy> {
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenById() {
+extension VariantsOptionsQuerySortThenBy
+    on QueryBuilder<VariantsOptions, VariantsOptions, QSortThenBy> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenByName() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
+      thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenByPrice() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy> thenByPrice() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'price', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenByPriceDesc() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
+      thenByPriceDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'price', Sort.desc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy> thenByVariantId() {
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
+      thenByVariantId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'variantId', Sort.asc);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QAfterSortBy>
+  QueryBuilder<VariantsOptions, VariantsOptions, QAfterSortBy>
       thenByVariantIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'variantId', Sort.desc);
@@ -761,23 +789,23 @@ extension VariantOptionsQuerySortThenBy
   }
 }
 
-extension VariantOptionsQueryWhereDistinct
-    on QueryBuilder<VariantOptions, VariantOptions, QDistinct> {
-  QueryBuilder<VariantOptions, VariantOptions, QDistinct> distinctByName(
+extension VariantsOptionsQueryWhereDistinct
+    on QueryBuilder<VariantsOptions, VariantsOptions, QDistinct> {
+  QueryBuilder<VariantsOptions, VariantsOptions, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QDistinct> distinctByPrice(
+  QueryBuilder<VariantsOptions, VariantsOptions, QDistinct> distinctByPrice(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'price', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<VariantOptions, VariantOptions, QDistinct>
+  QueryBuilder<VariantsOptions, VariantsOptions, QDistinct>
       distinctByVariantId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'variantId');
@@ -785,27 +813,27 @@ extension VariantOptionsQueryWhereDistinct
   }
 }
 
-extension VariantOptionsQueryProperty
-    on QueryBuilder<VariantOptions, VariantOptions, QQueryProperty> {
-  QueryBuilder<VariantOptions, int, QQueryOperations> idProperty() {
+extension VariantsOptionsQueryProperty
+    on QueryBuilder<VariantsOptions, VariantsOptions, QQueryProperty> {
+  QueryBuilder<VariantsOptions, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<VariantOptions, String?, QQueryOperations> nameProperty() {
+  QueryBuilder<VariantsOptions, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });
   }
 
-  QueryBuilder<VariantOptions, String?, QQueryOperations> priceProperty() {
+  QueryBuilder<VariantsOptions, String?, QQueryOperations> priceProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'price');
     });
   }
 
-  QueryBuilder<VariantOptions, int?, QQueryOperations> variantIdProperty() {
+  QueryBuilder<VariantsOptions, int?, QQueryOperations> variantIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'variantId');
     });

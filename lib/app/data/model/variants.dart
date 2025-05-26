@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:pos_getx/app/data/model/variants_options.dart';
 
 part 'variants.g.dart';
 
@@ -8,4 +9,6 @@ class Variants {
   String? name;
   int? rulesMin;
   int? rulesMax;
+
+  final variantOptions = IsarLinks<VariantsOptions>();
 }

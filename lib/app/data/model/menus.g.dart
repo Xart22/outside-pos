@@ -64,7 +64,14 @@ const MenusSchema = CollectionSchema(
   deserializeProp: _menusDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'categories': LinkSchema(
+      id: 1334992415559894197,
+      name: r'categories',
+      target: r'Categories',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _menusGetId,
   getLinks: _menusGetLinks,
@@ -173,11 +180,13 @@ Id _menusGetId(Menus object) {
 }
 
 List<IsarLinkBase<dynamic>> _menusGetLinks(Menus object) {
-  return [];
+  return [object.categories];
 }
 
 void _menusAttach(IsarCollection<dynamic> col, Id id, Menus object) {
   object.id = id;
+  object.categories
+      .attach(col, col.isar.collection<Categories>(), r'categories', id);
 }
 
 extension MenusQueryWhereSort on QueryBuilder<Menus, Menus, QWhere> {
@@ -1094,7 +1103,20 @@ extension MenusQueryFilter on QueryBuilder<Menus, Menus, QFilterCondition> {
 
 extension MenusQueryObject on QueryBuilder<Menus, Menus, QFilterCondition> {}
 
-extension MenusQueryLinks on QueryBuilder<Menus, Menus, QFilterCondition> {}
+extension MenusQueryLinks on QueryBuilder<Menus, Menus, QFilterCondition> {
+  QueryBuilder<Menus, Menus, QAfterFilterCondition> categories(
+      FilterQuery<Categories> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'categories');
+    });
+  }
+
+  QueryBuilder<Menus, Menus, QAfterFilterCondition> categoriesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'categories', 0, true, 0, true);
+    });
+  }
+}
 
 extension MenusQuerySortBy on QueryBuilder<Menus, Menus, QSortBy> {
   QueryBuilder<Menus, Menus, QAfterSortBy> sortByCategoryId() {

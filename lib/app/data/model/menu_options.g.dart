@@ -34,7 +34,20 @@ const MenuOptionsSchema = CollectionSchema(
   deserializeProp: _menuOptionsDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'menu': LinkSchema(
+      id: 8508504314320525706,
+      name: r'menu',
+      target: r'Menus',
+      single: true,
+    ),
+    r'variants': LinkSchema(
+      id: -6654047072112597452,
+      name: r'variants',
+      target: r'Variants',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _menuOptionsGetId,
   getLinks: _menuOptionsGetLinks,
@@ -95,12 +108,14 @@ Id _menuOptionsGetId(MenuOptions object) {
 }
 
 List<IsarLinkBase<dynamic>> _menuOptionsGetLinks(MenuOptions object) {
-  return [];
+  return [object.menu, object.variants];
 }
 
 void _menuOptionsAttach(
     IsarCollection<dynamic> col, Id id, MenuOptions object) {
   object.id = id;
+  object.menu.attach(col, col.isar.collection<Menus>(), r'menu', id);
+  object.variants.attach(col, col.isar.collection<Variants>(), r'variants', id);
 }
 
 extension MenuOptionsQueryWhereSort
@@ -402,7 +417,34 @@ extension MenuOptionsQueryObject
     on QueryBuilder<MenuOptions, MenuOptions, QFilterCondition> {}
 
 extension MenuOptionsQueryLinks
-    on QueryBuilder<MenuOptions, MenuOptions, QFilterCondition> {}
+    on QueryBuilder<MenuOptions, MenuOptions, QFilterCondition> {
+  QueryBuilder<MenuOptions, MenuOptions, QAfterFilterCondition> menu(
+      FilterQuery<Menus> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'menu');
+    });
+  }
+
+  QueryBuilder<MenuOptions, MenuOptions, QAfterFilterCondition> menuIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'menu', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<MenuOptions, MenuOptions, QAfterFilterCondition> variants(
+      FilterQuery<Variants> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'variants');
+    });
+  }
+
+  QueryBuilder<MenuOptions, MenuOptions, QAfterFilterCondition>
+      variantsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variants', 0, true, 0, true);
+    });
+  }
+}
 
 extension MenuOptionsQuerySortBy
     on QueryBuilder<MenuOptions, MenuOptions, QSortBy> {

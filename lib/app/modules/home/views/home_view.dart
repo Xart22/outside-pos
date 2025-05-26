@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_getx/app/modules/casier/views/casier_view.dart';
+import 'package:pos_getx/app/modules/products/views/products_view.dart';
 import 'package:pos_getx/app/modules/settings/views/settings_view.dart';
+import 'package:pos_getx/app/widgets/loading.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -12,31 +14,45 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff121212),
-      body: Row(
+      body: Stack(
         children: [
-          Container(
-            width: Get.width * 0.07,
-            padding: const EdgeInsets.only(top: 24, right: 12, left: 12),
-            margin: const EdgeInsets.only(
-              top: 15,
-              bottom: 15,
-            ),
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              color: Color(0xff1A1A1A),
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+          Row(
+            children: [
+              Container(
+                width: Get.width * 0.07,
+                padding: const EdgeInsets.only(top: 24, right: 12, left: 12),
+                margin: const EdgeInsets.only(
+                  top: 15,
+                  bottom: 15,
+                ),
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  color: Color(0xff1A1A1A),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: _sideMenu(),
               ),
-            ),
-            child: _sideMenu(),
+              Expanded(
+                child: Container(
+                  color: Color(0xff1A1A1A),
+                  child: _pageView(),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Container(
-              color: Color(0xff1A1A1A),
-              child: _pageView(),
-            ),
-          ),
+          Obx(
+            () => controller.globalState.isLoading.value
+                ? Container(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    child: const Center(
+                      child: Loading(size: 50),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          )
         ],
       ),
     );
@@ -48,12 +64,7 @@ class HomeView extends GetView<HomeController> {
         case 'Casier':
           return CasierView();
         case 'Menu':
-          return const Center(
-            child: Text(
-              'Menu',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
+          return ProductsView();
         case 'History':
           return const Center(
             child: Text(

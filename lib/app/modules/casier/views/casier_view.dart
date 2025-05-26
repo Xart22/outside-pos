@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_getx/app/widgets/item_menu.dart';
 import 'package:pos_getx/app/widgets/search.dart';
 
 import '../controllers/casier_controller.dart';
@@ -68,29 +69,33 @@ class CasierView extends GetView<CasierController> {
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
                     children: [
-                      _item(
-                        image: 'assets/images/food1.jpg',
+                      itemMenu(
+                        image: 'assets/images/cappuccino.jpeg',
                         title: 'Cappucino',
                         price: 'Rp. 25.000',
                         item: '1 item',
+                        edit: false,
                       ),
-                      _item(
-                        image: 'assets/images/food2.jpg',
+                      itemMenu(
+                        image: 'assets/images/cappuccino.jpeg',
                         title: 'Latte',
                         price: 'Rp. 30.000',
                         item: '1 item',
+                        edit: false,
                       ),
-                      _item(
-                        image: 'assets/images/food3.jpg',
+                      itemMenu(
+                        image: 'assets/images/espresso.jpg',
                         title: 'Espresso',
                         price: 'Rp. 20.000',
                         item: '1 item',
+                        edit: false,
                       ),
-                      _item(
-                        image: 'assets/images/food4.jpg',
+                      itemMenu(
+                        image: 'assets/images/macchiato.jpeg',
                         title: 'Macchiato',
                         price: 'Rp. 35.000',
                         item: '1 item',
+                        edit: false,
                       ),
                     ],
                   ),
@@ -112,65 +117,6 @@ class CasierView extends GetView<CasierController> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _item({
-    required String image,
-    required String title,
-    required String price,
-    required String item,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: const Color(0xff1A1A1A),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 130,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              image: DecorationImage(
-                image: AssetImage(image),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                price,
-                style: const TextStyle(
-                  color: Colors.deepOrange,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                item,
-                style: const TextStyle(
-                  color: Colors.white60,
-                  fontSize: 12,
-                ),
-              ),
-            ],
           ),
         ],
       ),

@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
+import 'package:pos_getx/app/service/global_state.dart';
 
 class HomeController extends GetxController {
   final pageIndex = "User".obs;
+  final globalState = Get.find<GlobalState>();
   @override
   void onInit() {
     super.onInit();

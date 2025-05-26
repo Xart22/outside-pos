@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_getx/app/modules/settings/views/printer/screen.dart';
+import 'package:pos_getx/app/modules/settings/views/store/screen.dart';
+import 'package:pos_getx/app/modules/settings/views/user/screen.dart';
 
 import '../controllers/settings_controller.dart';
 
@@ -73,16 +76,6 @@ class SettingsView extends GetView<SettingsController> {
               description: 'Manage your account',
             ),
             _itemMenu(
-              menu: 'Manage Menu',
-              icon: Icons.food_bank_rounded,
-              description: 'Manage your menu',
-            ),
-            _itemMenu(
-              menu: 'Manage History',
-              icon: Icons.history_toggle_off_rounded,
-              description: 'Manage your history',
-            ),
-            _itemMenu(
               menu: 'Manage Printer',
               icon: Icons.print,
               description: 'Manage your printer',
@@ -96,43 +89,19 @@ class SettingsView extends GetView<SettingsController> {
   _pageView() {
     return Obx(() {
       switch (controller.pageIndex.value) {
-        case 'User':
-          return const Center(
-            child: Text(
-              'Manage User',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
-        case 'Menu':
-          return const Center(
-            child: Text(
-              'Menu',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
-        case 'History':
-          return const Center(
-            child: Text(
-              'History',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
-        case 'Promos':
-          return const Center(
-            child: Text(
-              'Promos',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
-
-        default:
-          return const Center(
-            child: Text(
-              'Home',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
+        case 'Manage Store':
+          return StoreView();
+        case 'Manage User':
+          return ManageUserView();
+        case 'Manage Printer':
+          return ManagePrinterView();
       }
+      return const Center(
+        child: Text(
+          'Select a menu',
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+      );
     });
   }
 

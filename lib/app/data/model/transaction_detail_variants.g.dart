@@ -35,7 +35,14 @@ const TransactionDetailVariantsSchema = CollectionSchema(
   deserializeProp: _transactionDetailVariantsDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'variantOptions': LinkSchema(
+      id: 2947112085675472986,
+      name: r'variantOptions',
+      target: r'VariantsOptions',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _transactionDetailVariantsGetId,
   getLinks: _transactionDetailVariantsGetLinks,
@@ -97,12 +104,14 @@ Id _transactionDetailVariantsGetId(TransactionDetailVariants object) {
 
 List<IsarLinkBase<dynamic>> _transactionDetailVariantsGetLinks(
     TransactionDetailVariants object) {
-  return [];
+  return [object.variantOptions];
 }
 
 void _transactionDetailVariantsAttach(
     IsarCollection<dynamic> col, Id id, TransactionDetailVariants object) {
   object.id = id;
+  object.variantOptions.attach(
+      col, col.isar.collection<VariantsOptions>(), r'variantOptions', id);
 }
 
 extension TransactionDetailVariantsQueryWhereSort on QueryBuilder<
@@ -415,7 +424,21 @@ extension TransactionDetailVariantsQueryObject on QueryBuilder<
     TransactionDetailVariants, TransactionDetailVariants, QFilterCondition> {}
 
 extension TransactionDetailVariantsQueryLinks on QueryBuilder<
-    TransactionDetailVariants, TransactionDetailVariants, QFilterCondition> {}
+    TransactionDetailVariants, TransactionDetailVariants, QFilterCondition> {
+  QueryBuilder<TransactionDetailVariants, TransactionDetailVariants,
+      QAfterFilterCondition> variantOptions(FilterQuery<VariantsOptions> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'variantOptions');
+    });
+  }
+
+  QueryBuilder<TransactionDetailVariants, TransactionDetailVariants,
+      QAfterFilterCondition> variantOptionsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'variantOptions', 0, true, 0, true);
+    });
+  }
+}
 
 extension TransactionDetailVariantsQuerySortBy on QueryBuilder<
     TransactionDetailVariants, TransactionDetailVariants, QSortBy> {

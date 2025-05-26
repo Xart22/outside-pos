@@ -6,5 +6,4 @@ part 'categories.g.dart';
 class Categories {
   Id? id;
   String? name;
-  String? image;
 }

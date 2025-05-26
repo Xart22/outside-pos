@@ -45,7 +45,20 @@ const TransactionDetailsSchema = CollectionSchema(
   deserializeProp: _transactionDetailsDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'transaction': LinkSchema(
+      id: 6484993654222199543,
+      name: r'transaction',
+      target: r'Transactions',
+      single: true,
+    ),
+    r'menu': LinkSchema(
+      id: -3825764643102376670,
+      name: r'menu',
+      target: r'Menus',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _transactionDetailsGetId,
   getLinks: _transactionDetailsGetLinks,
@@ -115,12 +128,15 @@ Id _transactionDetailsGetId(TransactionDetails object) {
 
 List<IsarLinkBase<dynamic>> _transactionDetailsGetLinks(
     TransactionDetails object) {
-  return [];
+  return [object.transaction, object.menu];
 }
 
 void _transactionDetailsAttach(
     IsarCollection<dynamic> col, Id id, TransactionDetails object) {
   object.id = id;
+  object.transaction
+      .attach(col, col.isar.collection<Transactions>(), r'transaction', id);
+  object.menu.attach(col, col.isar.collection<Menus>(), r'menu', id);
 }
 
 extension TransactionDetailsQueryWhereSort
@@ -562,7 +578,35 @@ extension TransactionDetailsQueryObject
     on QueryBuilder<TransactionDetails, TransactionDetails, QFilterCondition> {}
 
 extension TransactionDetailsQueryLinks
-    on QueryBuilder<TransactionDetails, TransactionDetails, QFilterCondition> {}
+    on QueryBuilder<TransactionDetails, TransactionDetails, QFilterCondition> {
+  QueryBuilder<TransactionDetails, TransactionDetails, QAfterFilterCondition>
+      transaction(FilterQuery<Transactions> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'transaction');
+    });
+  }
+
+  QueryBuilder<TransactionDetails, TransactionDetails, QAfterFilterCondition>
+      transactionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'transaction', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<TransactionDetails, TransactionDetails, QAfterFilterCondition>
+      menu(FilterQuery<Menus> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'menu');
+    });
+  }
+
+  QueryBuilder<TransactionDetails, TransactionDetails, QAfterFilterCondition>
+      menuIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'menu', 0, true, 0, true);
+    });
+  }
+}
 
 extension TransactionDetailsQuerySortBy
     on QueryBuilder<TransactionDetails, TransactionDetails, QSortBy> {

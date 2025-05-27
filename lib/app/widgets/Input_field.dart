@@ -60,6 +60,11 @@ class InputField extends StatelessWidget {
           ),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: GoogleFonts.dmSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey.shade600,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
             ),

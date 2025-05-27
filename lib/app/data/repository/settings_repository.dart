@@ -5,7 +5,7 @@ import 'package:pos_getx/app/data/provider/api_provider.dart';
 
 class SettingsRepository {
   static Future<SettingsModel> loadSettings() async {
-    final data = await ApiClient.get('settings');
+    final data = await ApiClient.get('/settings');
     if (data.statusCode == 200) {
       return SettingsModel.fromJson(json.decode(data.body));
     } else {
@@ -17,7 +17,7 @@ class SettingsRepository {
     final requestBody = {
       'data': settings,
     };
-    final response = await ApiClient.put('settings', requestBody);
+    final response = await ApiClient.put('/settings', requestBody);
     if (response.statusCode != 200) {
       return false;
     }

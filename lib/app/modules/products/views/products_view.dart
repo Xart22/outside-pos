@@ -10,49 +10,47 @@ class ProductsView extends GetView<ProductsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xff121212),
-      body: SafeArea(
+      body: Container(
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Products',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Products',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Aksi untuk mengelola kategori
+                    controller.showModalCategory();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff1A1A1A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Aksi untuk mengelola kategori
-                      Get.snackbar('Info', 'Manage Categories clicked',
-                          snackPosition: SnackPosition.BOTTOM);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff1A1A1A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.add, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        'Add Categories',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                    ),
-                    child: Row(
-                      children: const [
-                        Icon(Icons.tune_outlined, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text(
-                          'Manage Categories',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Container(
               margin: const EdgeInsets.all(15),
@@ -60,9 +58,7 @@ class ProductsView extends GetView<ProductsController> {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 color: Color(0xff1A1A1A),
               ),
-              child: Column(
-                children: [
-                  TabBar(
+              child: Obx(() => TabBar(
                     controller: controller.tabController,
                     isScrollable: true,
                     indicatorColor: Colors.white,
@@ -70,114 +66,79 @@ class ProductsView extends GetView<ProductsController> {
                     unselectedLabelColor: Colors.grey,
                     indicatorSize: TabBarIndicatorSize.tab,
                     tabs: controller.listTab.map((tab) {
-                      return Tab(
-                        text: tab.text,
-                        icon: tab.icon,
+                      return GestureDetector(
+                        onLongPress: () => print('Long pressed on ${tab.text}'),
+                        child: Tab(
+                          text: tab.text,
+                          icon: tab.icon,
+                        ),
                       );
                     }).toList(),
-                  ),
-                ],
-              ),
+                  )),
             ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(20),
                 margin: const EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   color: Color.fromARGB(255, 32, 32, 32),
                 ),
-                child: TabBarView(
-                  controller: controller.tabController,
-                  children: [
-                    GridView.count(
-                      crossAxisCount: 5,
-                      childAspectRatio: 0.73,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(
-                              color: AppColors.primary,
-                              width: 2,
-                            ),
-                            color: const Color(0xff1A1A1A),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                child: Obx(() => TabBarView(
+                      controller: controller.tabController,
+                      children: controller.listTab.map((tab) {
+                        if (tab.text == 'All') {
+                          return GridView.count(
+                            crossAxisCount: 5,
+                            childAspectRatio: 0.7,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20,
                             children: [
-                              const Icon(Icons.add,
-                                  color: AppColors.primary, size: 50),
-                              const SizedBox(height: 10),
-                              const Text(
-                                'Add New Product',
-                                style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  border: Border.all(
+                                    color: AppColors.primary,
+                                    width: 2,
+                                  ),
+                                  color: const Color(0xff1A1A1A),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.add,
+                                        color: AppColors.primary, size: 50),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'Add New Product',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               ),
+                              // TODO: Tambahkan produk lainnya di sini
                             ],
-                          ),
-                        ),
-                        itemMenu(
-                          image: 'assets/images/cappuccino.jpeg',
-                          title: 'Cappucino',
-                          price: 'Rp. 25.000',
-                          item: '1 item',
-                          edit: true,
-                        ),
-                        itemMenu(
-                          image: 'assets/images/cappuccino.jpeg',
-                          title: 'Cappucino',
-                          price: 'Rp. 25.000',
-                          item: '1 item',
-                          edit: true,
-                        ),
-                        itemMenu(
-                          image: 'assets/images/cappuccino.jpeg',
-                          title: 'Latte',
-                          price: 'Rp. 30.000',
-                          item: '1 item',
-                          edit: true,
-                        ),
-                        itemMenu(
-                          image: 'assets/images/espresso.jpg',
-                          title: 'Espresso',
-                          price: 'Rp. 20.000',
-                          item: '1 item',
-                          edit: true,
-                        ),
-                        itemMenu(
-                          image: 'assets/images/macchiato.jpeg',
-                          title: 'Macchiato',
-                          price: 'Rp. 35.000',
-                          item: '1 item',
-                          edit: true,
-                        ),
-                      ],
-                    ),
-                    Center(
-                        child: Text('Food Products',
-                            style: TextStyle(color: Colors.white))),
-                    Center(
-                        child: Text('Drink Products',
-                            style: TextStyle(color: Colors.white))),
-                    Center(
-                        child: Text('Dessert Products',
-                            style: TextStyle(color: Colors.white))),
-                    Center(
-                        child: Text('Snack Products',
-                            style: TextStyle(color: Colors.white))),
-                    Center(
-                        child: Text('Other Products',
-                            style: TextStyle(color: Colors.white))),
-                  ],
-                ),
+                          );
+                        } else {
+                          return Center(
+                            child: Text(
+                              'Tab ${tab.text}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          );
+                        }
+                      }).toList(),
+                    )),
               ),
             ),
           ],

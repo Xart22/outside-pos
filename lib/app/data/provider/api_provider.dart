@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 
-const baseUrl = 'http://192.168.1.2/pos/public/api/';
+const baseUrl = 'http://173.103.11.5/pos/public/api';
 
 class ApiClient {
   static final http.Client httpClient = http.Client();
@@ -35,12 +35,12 @@ class ApiClient {
     try {
       final box = GetStorage();
       String? token = box.read('token');
-
       final response = await httpClient.post(
         Uri.parse(baseUrl + endpoint),
         headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: jsonEncode(body),
       );

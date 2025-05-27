@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pos_getx/app/data/model/categories_model.dart';
 import 'package:pos_getx/app/data/repository/categories_repository.dart';
+import 'package:pos_getx/app/data/repository/products_repository.dart';
 import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
+import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/select_search.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class ProductsController extends GetxController
@@ -14,15 +20,18 @@ class ProductsController extends GetxController
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  final nameError = ''.obs;
+  final priceError = ''.obs;
+  final descriptionError = ''.obs;
   final categorySelected = 0.obs;
   final isActive = false.obs;
   final isOnline = false.obs;
-  final selectedImage = ''.obs;
   TextEditingController categoryController = TextEditingController();
   TextEditingController categoryIconController = TextEditingController();
   final categoryError = ''.obs;
   final iconError = ''.obs;
   var listCategories = <Category>[].obs;
+  var imageFile = Rx<XFile?>(null);
 
   late TabController tabController;
 
@@ -176,6 +185,175 @@ class ProductsController extends GetxController
         showSnackbar("Error", "Category gagal ditambahkan");
       }
     });
+  }
+
+  void showModalProduct() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 52, 52, 52),
+        title: const Text(
+          'Tambah Produk',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: SizedBox(
+            width: Get.width / 2,
+            child: Column(
+              children: [
+                InputField(
+                  label: "Nama Produk",
+                  hint: "Masukkan nama produk",
+                  controller: nameController,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 8),
+                InputField(
+                  label: "Harga",
+                  hint: "Masukkan harga produk",
+                  controller: priceController,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [CurrencyInputFormatter()],
+                ),
+                const SizedBox(height: 8),
+                InputField(
+                  label: "Deskripsi",
+                  hint: "Masukkan deskripsi produk",
+                  controller: descriptionController,
+                  textInputAction: TextInputAction.done,
+                ),
+                const SizedBox(height: 8),
+                SelectSearch(
+                  label: "Kategori",
+                  data: listCategories,
+                  onChanged: (value) {
+                    if (value != null) {
+                      categorySelected.value = value;
+                    }
+                  },
+                ),
+                const SizedBox(height: 20),
+                Obx(() => GestureDetector(
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? pickedFile = await picker.pickImage(
+                          source: ImageSource.gallery,
+                          maxWidth: 800,
+                          maxHeight: 800,
+                        );
+                        if (pickedFile != null) {
+                          imageFile.value = pickedFile;
+                        }
+                      },
+                      child: Container(
+                        width: Get.width / 4,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade800,
+                          borderRadius: BorderRadius.circular(8),
+                          image: imageFile.value != null
+                              ? DecorationImage(
+                                  image: FileImage(
+                                    imageFile.value?.path != null
+                                        ? File(imageFile.value!.path)
+                                        : File(''),
+                                  ),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: imageFile.value == null
+                            ? const Center(
+                                child: Text(
+                                  'Pilih Gambar',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+                            : null,
+                      ),
+                    )),
+                const SizedBox(height: 8),
+                Obx(() => CheckboxListTile(
+                      title: const Text(
+                        'Online',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      value: isOnline.value ?? false,
+                      onChanged: (value) {
+                        isOnline.value = value ?? false;
+                      },
+                      activeColor: AppColors.primary,
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (globalState.isLoading.value) return;
+                        categorySelected.value = 0;
+                        nameController.clear();
+                        priceController.clear();
+                        descriptionController.clear();
+                        imageFile.value = null;
+                        Get.back();
+                      },
+                      child: const Text('Batal'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (globalState.isLoading.value) return;
+                        createProduct();
+                      },
+                      child: const Text('Simpan'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void createProduct() async {
+    if (nameController.text.isEmpty ||
+        priceController.text.isEmpty ||
+        descriptionController.text.isEmpty ||
+        categorySelected.value == 0) {
+      showSnackbar("Error", "Semua field harus diisi");
+      return;
+    }
+
+    //globalState.isLoading.value = true;
+
+    final result = await ProductsRepository.createProduct(
+      name: nameController.text,
+      price: priceController.text,
+      description: descriptionController.text,
+      categoryId: categorySelected.value,
+      imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+      isOnline: isOnline.value,
+    );
+
+    globalState.isLoading.value = false;
+
+    if (result) {
+      showSnackbar("Success", "Produk berhasil ditambahkan");
+      nameController.clear();
+      priceController.clear();
+      descriptionController.clear();
+      imageFile.value = null;
+      categorySelected.value = 0;
+      isOnline.value = false;
+      Get.back();
+    } else {
+      showSnackbar("Error", "Produk gagal ditambahkan");
+    }
   }
 
   @override

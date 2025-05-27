@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 
@@ -16,6 +17,7 @@ class InputField extends StatelessWidget {
   final int? maxLines;
   final void Function()? onTap;
   final bool? readOnly;
+  final List<TextInputFormatter> inputFormatters;
 
   const InputField({
     super.key,
@@ -32,6 +34,7 @@ class InputField extends StatelessWidget {
     this.maxLines,
     this.onTap,
     this.readOnly = false,
+    this.inputFormatters = const [],
   });
 
   @override
@@ -89,6 +92,7 @@ class InputField extends StatelessWidget {
           validator: validator,
           onTap: onTap,
           readOnly: readOnly!,
+          inputFormatters: inputFormatters.isNotEmpty ? inputFormatters : [],
         ),
       ],
     );

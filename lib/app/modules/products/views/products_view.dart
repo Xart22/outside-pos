@@ -94,33 +94,39 @@ class ProductsView extends GetView<ProductsController> {
                             crossAxisSpacing: 20,
                             mainAxisSpacing: 20,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: AppColors.primary,
-                                    width: 2,
-                                  ),
-                                  color: const Color(0xff1A1A1A),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(Icons.add,
-                                        color: AppColors.primary, size: 50),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'Add New Product',
-                                      style: TextStyle(
-                                        color: AppColors.primary,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.center,
+                              GestureDetector(
+                                onTap: () {
+                                  controller.showModalProduct();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(
+                                      color: AppColors.primary,
+                                      width: 2,
                                     ),
-                                  ],
+                                    color: const Color(0xff1A1A1A),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.add,
+                                          color: AppColors.primary, size: 50),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Add New Product',
+                                        style: TextStyle(
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               // TODO: Tambahkan produk lainnya di sini

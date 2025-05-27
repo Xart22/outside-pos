@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 
-const baseUrl = 'http://173.103.11.5/pos/public/api';
+const baseUrl = 'http://192.168.1.2/pos/public/api';
 
 class ApiClient {
   static final http.Client httpClient = http.Client();
@@ -19,7 +19,6 @@ class ApiClient {
           'Accept': 'application/json',
         },
       );
-      //convert response to json
       if (response.statusCode == 200) {
         return response;
       } else {
@@ -61,9 +60,9 @@ class ApiClient {
         headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
-          'Content-Type': 'application/json', // <-- Tambahkan ini
+          'Content-Type': 'application/json',
         },
-        body: jsonEncode(body), // <-- Ubah body ke JSON string
+        body: jsonEncode(body),
       );
       return response;
     } catch (e) {
@@ -100,8 +99,9 @@ class ApiClient {
       request.headers.addAll({
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data',
       });
-      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+      request.files.add(await http.MultipartFile.fromPath('image', filePath));
       request.fields
           .addAll(body.map((key, value) => MapEntry(key, value.toString())));
       var response = await request.send();

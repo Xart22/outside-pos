@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
+import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/item_menu.dart';
 import '../controllers/products_controller.dart';
 
@@ -79,7 +80,9 @@ class ProductsView extends GetView<ProductsController> {
             Expanded(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 15),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   color: Color.fromARGB(255, 32, 32, 32),
@@ -129,18 +132,40 @@ class ProductsView extends GetView<ProductsController> {
                                   ),
                                 ),
                               ),
-                              // TODO: Tambahkan produk lainnya di sini
+                              ...controller.listMenu.map((menu) {
+                                return itemMenu(
+                                  image: menu.image,
+                                  title: menu.name,
+                                  price: formatRupiah(menu.price),
+                                  item: '${menu.stock} items',
+                                  edit: true,
+                                  onTap: () {
+                                    controller.showModalProduct(menu: menu);
+                                  },
+                                );
+                              }),
                             ],
                           );
                         } else {
-                          return Center(
-                            child: Text(
-                              'Tab ${tab.text}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
+                          return GridView.count(
+                            crossAxisCount: 5,
+                            childAspectRatio: 0.7,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20,
+                            children: controller.listMenu
+                                .where((menu) => menu.category.name == tab.text)
+                                .map((menu) {
+                              return itemMenu(
+                                image: menu.image,
+                                title: menu.name,
+                                price: formatRupiah(menu.price),
+                                item: '${menu.stock} items',
+                                edit: true,
+                                onTap: () {
+                                  controller.showModalProduct(menu: menu);
+                                },
+                              );
+                            }).toList(),
                           );
                         }
                       }).toList(),

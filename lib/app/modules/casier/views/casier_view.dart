@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/item_menu.dart';
 import 'package:pos_getx/app/widgets/search.dart';
 
@@ -56,48 +57,82 @@ class CasierView extends GetView<CasierController> {
                       child: InputTextField(
                         controller: controller.searchController,
                         hintText: 'Search',
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          controller.searchMenu(value);
+                        },
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Color(0xff1A1A1A),
+                  ),
+                  child: Obx(() => TabBar(
+                        controller: controller.tabController,
+                        isScrollable: true,
+                        indicatorColor: Colors.white,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        tabs: controller.listTab.map((tab) {
+                          return Tab(
+                            text: tab.text,
+                            icon: tab.icon,
+                          );
+                        }).toList(),
+                      )),
+                ),
                 Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 4,
-                    childAspectRatio: 0.8,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    children: [
-                      itemMenu(
-                        image: 'assets/images/cappuccino.jpeg',
-                        title: 'Cappucino',
-                        price: 'Rp. 25.000',
-                        item: '1 item',
-                        edit: false,
-                      ),
-                      itemMenu(
-                        image: 'assets/images/cappuccino.jpeg',
-                        title: 'Latte',
-                        price: 'Rp. 30.000',
-                        item: '1 item',
-                        edit: false,
-                      ),
-                      itemMenu(
-                        image: 'assets/images/espresso.jpg',
-                        title: 'Espresso',
-                        price: 'Rp. 20.000',
-                        item: '1 item',
-                        edit: false,
-                      ),
-                      itemMenu(
-                        image: 'assets/images/macchiato.jpeg',
-                        title: 'Macchiato',
-                        price: 'Rp. 35.000',
-                        item: '1 item',
-                        edit: false,
-                      ),
-                    ],
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: Color.fromARGB(255, 32, 32, 32),
+                    ),
+                    child: Obx(() => TabBarView(
+                          controller: controller.tabController,
+                          children: controller.listTab.map((tab) {
+                            if (tab.text == 'All') {
+                              return GridView.count(
+                                crossAxisCount: 4,
+                                childAspectRatio: 0.84,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                children: [
+                                  ...controller.filteredMenu.map((menu) {
+                                    return itemMenu(
+                                      image: menu.image,
+                                      title: menu.name,
+                                      price: formatRupiah(menu.price),
+                                      item: '${menu.stock} items',
+                                      edit: false,
+                                    );
+                                  }),
+                                ],
+                              );
+                            } else {
+                              return GridView.count(
+                                crossAxisCount: 4,
+                                childAspectRatio: 0.84,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                children: controller.filteredMenu
+                                    .where((menu) =>
+                                        menu.category.name == tab.text)
+                                    .map((menu) {
+                                  return itemMenu(
+                                    image: menu.image,
+                                    title: menu.name,
+                                    price: formatRupiah(menu.price),
+                                    item: '${menu.stock} items',
+                                    edit: false,
+                                  );
+                                }).toList(),
+                              );
+                            }
+                          }).toList(),
+                        )),
                   ),
                 ),
               ],

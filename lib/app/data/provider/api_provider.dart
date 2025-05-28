@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 
-const baseUrl = 'http://192.168.1.2/pos/public/api';
+const baseUrl = 'http://173.103.11.5/pos/public/api';
 
 class ApiClient {
   static final http.Client httpClient = http.Client();
@@ -88,7 +88,7 @@ class ApiClient {
   }
 
   static Future<http.Response> upload(
-      String endpoint, Map<String, dynamic> body, String filePath) async {
+      String endpoint, Map<String, dynamic> body, String? filePath) async {
     try {
       final box = GetStorage();
       String? token = box.read('token');
@@ -101,7 +101,9 @@ class ApiClient {
         'Accept': 'application/json',
         'Content-Type': 'multipart/form-data',
       });
-      request.files.add(await http.MultipartFile.fromPath('image', filePath));
+      if (filePath != null) {
+        request.files.add(await http.MultipartFile.fromPath('image', filePath));
+      }
       request.fields
           .addAll(body.map((key, value) => MapEntry(key, value.toString())));
       var response = await request.send();

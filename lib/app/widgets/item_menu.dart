@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pos_getx/app/utils/url_image.dart';
 
 Widget itemMenu({
   required String image,
@@ -6,6 +8,7 @@ Widget itemMenu({
   required String price,
   required String item,
   required bool edit,
+  Function()? onTap,
 }) {
   return Container(
     padding: const EdgeInsets.all(12),
@@ -21,7 +24,7 @@ Widget itemMenu({
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             image: DecorationImage(
-              image: AssetImage(image),
+              image: CachedNetworkImageProvider(imageUrl(image)),
               fit: BoxFit.cover,
             ),
           ),
@@ -61,8 +64,7 @@ Widget itemMenu({
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Action for edit button
-                print('Edit $title');
+                onTap?.call();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrange,

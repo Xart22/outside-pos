@@ -6,8 +6,11 @@ import 'package:pos_getx/app/data/provider/api_provider.dart';
 class CategoriesRepository {
   static Future<List<Category>> getCategories() async {
     final response = await ApiClient.get('/categories');
+
     if (response.statusCode == 200) {
-      return CategoriesModel.fromJson(json.decode(response.body)).categories;
+      return (List<Category>.from(json
+          .decode(response.body)['categories']
+          .map((x) => Category.fromJson(x))));
     } else {
       throw Exception('Failed to load categories');
     }

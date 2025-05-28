@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pos_getx/app/data/model/categories_model.dart';
+import 'package:pos_getx/app/data/model/menu_model.dart';
 import 'package:pos_getx/app/data/repository/categories_repository.dart';
 import 'package:pos_getx/app/data/repository/products_repository.dart';
 import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
+import 'package:pos_getx/app/utils/url_image.dart';
 import 'package:pos_getx/app/widgets/Input_field.dart';
 import 'package:pos_getx/app/widgets/select_search.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
@@ -20,18 +23,21 @@ class ProductsController extends GetxController
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController stockController = TextEditingController();
   final nameError = ''.obs;
   final priceError = ''.obs;
   final descriptionError = ''.obs;
   final categorySelected = 0.obs;
+  final stockError = ''.obs;
   final isActive = false.obs;
   final isOnline = false.obs;
   TextEditingController categoryController = TextEditingController();
   TextEditingController categoryIconController = TextEditingController();
   final categoryError = ''.obs;
   final iconError = ''.obs;
-  var listCategories = <Category>[].obs;
+  final listCategories = <Category>[].obs;
   var imageFile = Rx<XFile?>(null);
+  final listMenu = <Menu>[].obs;
 
   late TabController tabController;
 
@@ -44,26 +50,6 @@ class ProductsController extends GetxController
       )),
     ),
   ].obs;
-
-  void getListCategory() async {
-    listCategories.value = await CategoriesRepository.getCategories();
-    for (var category in listCategories) {
-      final exists = listTab.any((tab) => tab.text == category.name);
-      if (!exists) {
-        listTab.add(
-          Tab(
-            text: category.name,
-            icon: Icon(IconData(
-              int.tryParse(category.icon ?? '0xe07e') ?? 0xe07e,
-              fontFamily: 'MaterialIcons',
-            )),
-          ),
-        );
-      }
-    }
-
-    tabController = TabController(length: listTab.length, vsync: this);
-  }
 
   void showModalCategory() {
     Get.defaultDialog(
@@ -175,7 +161,7 @@ class ProductsController extends GetxController
     ).then((value) {
       globalState.isLoading.value = false;
       if (value) {
-        getListCategory();
+        getAllData();
         categoryController.clear();
         categoryIconController.clear();
         Get.back();
@@ -187,12 +173,43 @@ class ProductsController extends GetxController
     });
   }
 
-  void showModalProduct() {
+  void getAllData() async {
+    listMenu.value = await ProductsRepository.getProducts();
+
+    listCategories.value = await CategoriesRepository.getCategories();
+    for (var category in listCategories) {
+      final exists = listTab.any((tab) => tab.text == category.name);
+      if (!exists) {
+        listTab.add(
+          Tab(
+            text: category.name,
+            icon: Icon(IconData(
+              int.tryParse(category.icon ?? '0xe07e') ?? 0xe07e,
+              fontFamily: 'MaterialIcons',
+            )),
+          ),
+        );
+      }
+    }
+
+    tabController = TabController(length: listTab.length, vsync: this);
+    // globalState.isLoading.value = false;
+  }
+
+  void showModalProduct({Menu? menu}) {
+    nameController.text = menu?.name ?? '';
+    priceController.text = menu != null ? formatRupiah(menu.price) : '';
+    descriptionController.text = menu?.description ?? '';
+    categorySelected.value = menu?.category.id ?? 0;
+    isOnline.value = (menu?.isOnline ?? false) == 1;
+    stockController.text = menu?.stock.toString() ?? '';
+
     Get.dialog(
+      barrierDismissible: false,
       AlertDialog(
         backgroundColor: const Color.fromARGB(255, 52, 52, 52),
-        title: const Text(
-          'Tambah Produk',
+        title: Text(
+          menu != null ? 'Edit Produk' : 'Tambah Produk',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -210,7 +227,7 @@ class ProductsController extends GetxController
                   controller: nameController,
                   textInputAction: TextInputAction.next,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 InputField(
                   label: "Harga",
                   hint: "Masukkan harga produk",
@@ -219,17 +236,28 @@ class ProductsController extends GetxController
                   keyboardType: TextInputType.number,
                   inputFormatters: [CurrencyInputFormatter()],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 InputField(
                   label: "Deskripsi",
                   hint: "Masukkan deskripsi produk",
                   controller: descriptionController,
                   textInputAction: TextInputAction.done,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
+                InputField(
+                  label: "Stock",
+                  hint: "Masukkan jumlah stock produk",
+                  controller: stockController,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                ),
+                const SizedBox(height: 10),
                 SelectSearch(
                   label: "Kategori",
                   data: listCategories,
+                  selectedItem: listCategories.firstWhereOrNull(
+                    (category) => category.id == categorySelected.value,
+                  ),
                   onChanged: (value) {
                     if (value != null) {
                       categorySelected.value = value;
@@ -237,52 +265,76 @@ class ProductsController extends GetxController
                   },
                 ),
                 const SizedBox(height: 20),
-                Obx(() => GestureDetector(
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        final XFile? pickedFile = await picker.pickImage(
-                          source: ImageSource.gallery,
-                          maxWidth: 800,
-                          maxHeight: 800,
-                        );
-                        if (pickedFile != null) {
-                          imageFile.value = pickedFile;
-                        }
-                      },
-                      child: Container(
-                        width: Get.width / 4,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade800,
-                          borderRadius: BorderRadius.circular(8),
-                          image: imageFile.value != null
-                              ? DecorationImage(
-                                  image: FileImage(
-                                    imageFile.value?.path != null
-                                        ? File(imageFile.value!.path)
-                                        : File(''),
-                                  ),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                        ),
-                        child: imageFile.value == null
-                            ? const Center(
-                                child: Text(
-                                  'Pilih Gambar',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              )
-                            : null,
-                      ),
-                    )),
+                Row(
+                  mainAxisAlignment: menu != null
+                      ? MainAxisAlignment.spaceBetween
+                      : MainAxisAlignment.center,
+                  children: [
+                    menu?.image != null
+                        ? Container(
+                            width: Get.width / 4.5,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade800,
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    imageUrl(menu?.image ?? '')),
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
+                    const SizedBox(width: 8),
+                    Obx(() => GestureDetector(
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final XFile? pickedFile = await picker.pickImage(
+                              source: ImageSource.gallery,
+                              maxWidth: 800,
+                              maxHeight: 800,
+                            );
+                            if (pickedFile != null) {
+                              imageFile.value = pickedFile;
+                            }
+                          },
+                          child: Container(
+                            width: Get.width / 4.5,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade800,
+                              borderRadius: BorderRadius.circular(8),
+                              image: imageFile.value != null
+                                  ? DecorationImage(
+                                      image: FileImage(
+                                        imageFile.value?.path != null
+                                            ? File(imageFile.value!.path)
+                                            : File(''),
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: imageFile.value == null
+                                ? Center(
+                                    child: Text(
+                                      menu?.image != null
+                                          ? 'Ganti Foto Produk'
+                                          : 'Pilih Foto Produk',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                : null,
+                          ),
+                        ))
+                  ],
+                ),
                 const SizedBox(height: 8),
                 Obx(() => CheckboxListTile(
                       title: const Text(
                         'Online',
                         style: TextStyle(color: Colors.white),
                       ),
-                      value: isOnline.value ?? false,
+                      value: isOnline.value,
                       onChanged: (value) {
                         isOnline.value = value ?? false;
                       },
@@ -306,7 +358,11 @@ class ProductsController extends GetxController
                     ElevatedButton(
                       onPressed: () {
                         if (globalState.isLoading.value) return;
-                        createProduct();
+                        if (menu != null) {
+                          processProduct(isEditMode: true, id: menu.id);
+                        } else {
+                          processProduct();
+                        }
                       },
                       child: const Text('Simpan'),
                     ),
@@ -320,48 +376,82 @@ class ProductsController extends GetxController
     );
   }
 
-  void createProduct() async {
+  void processProduct({
+    bool isEditMode = false,
+    int id = 0,
+  }) async {
     if (nameController.text.isEmpty ||
         priceController.text.isEmpty ||
         descriptionController.text.isEmpty ||
-        categorySelected.value == 0) {
+        categorySelected.value == 0 ||
+        stockController.text.isEmpty) {
       showSnackbar("Error", "Semua field harus diisi");
       return;
     }
 
-    //globalState.isLoading.value = true;
-
-    final result = await ProductsRepository.createProduct(
-      name: nameController.text,
-      price: priceController.text,
-      description: descriptionController.text,
-      categoryId: categorySelected.value,
-      imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
-      isOnline: isOnline.value,
-    );
-
-    globalState.isLoading.value = false;
-
-    if (result) {
-      showSnackbar("Success", "Produk berhasil ditambahkan");
-      nameController.clear();
-      priceController.clear();
-      descriptionController.clear();
-      imageFile.value = null;
-      categorySelected.value = 0;
-      isOnline.value = false;
-      Get.back();
+    if (isEditMode) {
+      globalState.isLoading.value = true;
+      final result = await ProductsRepository.updateProduct(
+        id: id,
+        name: nameController.text,
+        price: priceController.text,
+        description: descriptionController.text,
+        categoryId: categorySelected.value,
+        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+        isOnline: isOnline.value,
+        stock: stockController.text.isEmpty ? '0' : stockController.text,
+      );
+      globalState.isLoading.value = false;
+      if (result) {
+        getAllData();
+        Get.back();
+        showSnackbar("Success", "Produk berhasil diperbarui");
+        nameController.clear();
+        priceController.clear();
+        descriptionController.clear();
+        stockController.clear();
+        imageFile.value = null;
+        categorySelected.value = 0;
+        isOnline.value = false;
+        stockController.clear();
+      } else {
+        showSnackbar("Error", "Produk gagal diperbarui");
+      }
     } else {
-      showSnackbar("Error", "Produk gagal ditambahkan");
+      final result = await ProductsRepository.createProduct(
+        name: nameController.text,
+        price: priceController.text,
+        description: descriptionController.text,
+        categoryId: categorySelected.value,
+        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+        isOnline: isOnline.value,
+        stock: stockController.text.isEmpty ? '0' : stockController.text,
+      );
+
+      globalState.isLoading.value = false;
+
+      if (result) {
+        getAllData();
+        Get.back();
+        showSnackbar("Success", "Produk berhasil ditambahkan");
+        nameController.clear();
+        priceController.clear();
+        descriptionController.clear();
+        imageFile.value = null;
+        categorySelected.value = 0;
+        isOnline.value = false;
+        stockController.clear();
+      } else {
+        showSnackbar("Error", "Produk gagal ditambahkan");
+      }
     }
   }
 
   @override
   void onInit() {
-    tabController = TabController(length: listTab.length, vsync: this);
-    getListCategory();
-
     super.onInit();
+    tabController = TabController(length: listTab.length, vsync: this);
+    getAllData();
   }
 
   @override

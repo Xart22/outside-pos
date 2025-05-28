@@ -7,12 +7,14 @@ class SelectSearch extends StatelessWidget {
   final String label;
   final List<dynamic> data;
   final void Function(int?)? onChanged;
+  final dynamic selectedItem;
 
   const SelectSearch({
     super.key,
     required this.label,
     required this.data,
     this.onChanged,
+    this.selectedItem,
   });
 
   @override
@@ -29,32 +31,35 @@ class SelectSearch extends StatelessWidget {
         ),
         SizedBox(height: 8),
         DropdownSearch<dynamic>(
+          selectedItem: selectedItem, // ✅ Set selected item
           items: (f, cs) => data.where((e) => e.name.contains(f)).toList(),
           onChanged:
               (onChanged != null) ? (value) => onChanged!(value?.id) : null,
           itemAsString: (dynamic data) => data.name,
-          compareFn: (dynamic data1, dynamic data2) => data1.name == data2.name,
+          compareFn: (data1, data2) =>
+              data1.id == data2.id, // ✅ Perbandingan berdasarkan id
           filterFn: (dynamic data, String filter) => data.name.contains(filter),
           decoratorProps: DropDownDecoratorProps(
-              decoration: InputDecoration(
-            hintText: 'Pilih $label',
-            hintStyle: GoogleFonts.dmSans(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey.shade600,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: AppColors.backgroundLight,
+            decoration: InputDecoration(
+              hintText: 'Pilih $label',
+              hintStyle: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey.shade600,
               ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: AppColors.backgroundLight,
+                ),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
             ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-          )),
+          ),
           dropdownBuilder: (context, selectedItem) {
             return Text(
               selectedItem?.name ?? '',

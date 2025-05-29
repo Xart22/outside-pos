@@ -12,6 +12,10 @@ import '../modules/products/bindings/products_binding.dart';
 import '../modules/products/views/products_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
+import '../modules/variant_form/bindings/variant_form_binding.dart';
+import '../modules/variant_form/views/variant_form_view.dart';
+import '../modules/variants/bindings/variants_binding.dart';
+import '../modules/variants/views/variants_view.dart';
 
 part 'app_routes.dart';
 
@@ -29,6 +33,7 @@ class AppPages {
         HomeBinding(),
         ProductsBinding(),
         CasierBinding(),
+        VariantsBinding(),
         SettingsBinding(),
         HistoryBinding(),
       ],
@@ -57,6 +62,16 @@ class AppPages {
       name: _Paths.PRODUCTS,
       page: () => const ProductsView(),
       binding: ProductsBinding(),
+    ),
+    GetPage(
+      name: _Paths.VARIANTS,
+      page: () => const VariantsView(),
+      binding: VariantsBinding(),
+    ),
+    GetPage(
+      name: _Paths.VARIANT_FORM,
+      page: () => const VariantFormView(),
+      binding: VariantFormBinding(),
     ),
   ];
 }

@@ -12,6 +12,7 @@ class ProductsRepository {
       return (List<Menu>.from(
           json.decode(response.body)['menu'].map((x) => Menu.fromJson(x))));
     } else {
+      print('Failed to load products: ${response.statusCode}');
       throw Exception('Failed to load products');
     }
   }

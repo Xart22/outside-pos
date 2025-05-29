@@ -94,6 +94,17 @@ class CasierView extends GetView<CasierController> {
                           controller: controller.tabController,
                           children: controller.listTab.map((tab) {
                             if (tab.text == 'All') {
+                              if (controller.filteredMenu.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    'No menu found',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                );
+                              }
                               return GridView.count(
                                 crossAxisCount: 4,
                                 childAspectRatio: 0.84,

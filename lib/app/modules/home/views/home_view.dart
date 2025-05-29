@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:pos_getx/app/modules/casier/views/casier_view.dart';
 import 'package:pos_getx/app/modules/products/views/products_view.dart';
 import 'package:pos_getx/app/modules/settings/views/settings_view.dart';
+import 'package:pos_getx/app/modules/variants/views/variants_view.dart';
 import 'package:pos_getx/app/widgets/loading.dart';
 
 import '../controllers/home_controller.dart';
@@ -66,6 +67,8 @@ class HomeView extends GetView<HomeController> {
           return CasierView();
         case 'Menu':
           return ProductsView();
+        case 'Variants':
+          return VariantsView();
         case 'History':
           return const Center(
             child: Text(
@@ -107,6 +110,10 @@ class HomeView extends GetView<HomeController> {
             _itemMenu(
               menu: 'Menu',
               icon: Icons.food_bank_rounded,
+            ),
+            _itemMenu(
+              menu: 'Variants',
+              icon: Icons.category_rounded,
             ),
             _itemMenu(
               menu: 'History',

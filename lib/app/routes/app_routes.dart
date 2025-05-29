@@ -13,6 +13,8 @@ abstract class Routes {
   static const STOCK = _Paths.STOCK;
   static const MENU = _Paths.MENU;
   static const PRODUCTS = _Paths.PRODUCTS;
+  static const VARIANTS = _Paths.VARIANTS;
+  static const VARIANT_FORM = _Paths.VARIANT_FORM;
 }
 
 abstract class _Paths {
@@ -27,4 +29,6 @@ abstract class _Paths {
   static const STOCK = '/stock';
   static const MENU = '/menu';
   static const PRODUCTS = '/products';
+  static const VARIANTS = '/variants';
+  static const VARIANT_FORM = '/variant-form';
 }

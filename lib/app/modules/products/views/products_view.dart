@@ -31,7 +31,6 @@ class ProductsView extends GetView<ProductsController> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Aksi untuk mengelola kategori
                     controller.showModalCategory();
                   },
                   style: ElevatedButton.styleFrom(

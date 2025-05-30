@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class VariantFormController extends GetxController {
   TextEditingController nameController = TextEditingController();
@@ -11,6 +12,8 @@ class VariantFormController extends GetxController {
 
   final listOption = <Option>[].obs;
   final editMode = false.obs;
+  final isLoading = false.obs;
+  final errorMessage = ''.obs;
 
   void showModalOption() {
     Get.bottomSheet(
@@ -26,7 +29,7 @@ class VariantFormController extends GetxController {
           children: [
             InputField(
               controller: optionsController,
-              label: 'Nama Variant',
+              label: 'Option Variant',
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 10),
@@ -46,26 +49,38 @@ class VariantFormController extends GetxController {
                 ElevatedButton(
                   onPressed: () {
                     if (optionsController.text.isNotEmpty &&
-                        priceController.text.isNotEmpty) {
-                      // listOption.add(Option(
-                      //   name: optionsController.text,
-                      //   price: RupiahFormatter.parseToDouble(priceController.text),
-                      // ));
+                        priceController.text.isNotEmpty &&
+                        listOption.firstWhereOrNull((option) =>
+                                option.name.toLowerCase() ==
+                                optionsController.text.toLowerCase()) ==
+                            null) {
+                      listOption.add(Option(
+                        name: optionsController.text,
+                        price: int.parse(priceController.text
+                            .replaceAll(RegExp(r'[^\d]'), '')),
+                        variantId: listOption.isNotEmpty
+                            ? listOption.first.variantId
+                            : 0,
+                        position: listOption.length + 1,
+                      ));
                       optionsController.clear();
                       priceController.clear();
                       Get.back();
-                    } else {}
+                    } else {
+                      showSnackbar("Error",
+                          "Nama dan harga tidak boleh kosong atau sudah ada");
+                      return;
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff1A1A1A),
                   ),
-                  child: const Text('Tambah'),
+                  child: const Text('Simpan'),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    optionsController.clear();
-                    priceController.clear();
+                    clearForm();
                     Get.back();
                   },
                   style: ElevatedButton.styleFrom(
@@ -81,6 +96,37 @@ class VariantFormController extends GetxController {
       isScrollControlled: true,
       isDismissible: false,
     );
+  }
+
+  void clearForm() {
+    nameController.clear();
+    optionsController.clear();
+    priceController.clear();
+  }
+
+  void saveVariant() {
+    if (nameController.text.isEmpty) {
+      errorMessage.value = "Nama variant tidak boleh kosong";
+      return;
+    }
+    if (listOption.isEmpty) {
+      showSnackbar("Error", "Pilihan variant tidak boleh kosong");
+      return;
+    }
+
+    final variant = Variant(
+      id: editMode.value ? listOption.first.variantId : 0,
+      name: nameController.text,
+      rulesMin: 0,
+      rulesMax: 0,
+      options: listOption.toList(),
+    );
+
+    isLoading.value = true;
+    Future.delayed(const Duration(seconds: 2), () {
+      isLoading.value = false;
+      Get.back(result: variant);
+    });
   }
 
   @override

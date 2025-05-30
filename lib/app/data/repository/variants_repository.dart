@@ -16,11 +16,15 @@ class VariantsRepository {
     }
   }
 
-  static Future<bool> createCategory(
-      {required String name, required String icon}) {
+  static Future<bool> createVariant(Variant variant) async {
     final requestBody = {
-      'name': name,
-      'icon': icon,
+      'name': variant.name,
+      'options': variant.options
+          .map((option) => {
+                'name': option.name,
+                'price': option.price,
+              })
+          .toList(),
     };
     return ApiClient.post('/categories/store', requestBody).then((response) {
       if (response.statusCode == 200) {

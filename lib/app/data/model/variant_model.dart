@@ -32,14 +32,14 @@ class Variant {
 }
 
 class Option {
-  final int id;
+  int? id;
   final int variantId;
   final String name;
   final int price;
   int position;
 
   Option({
-    required this.id,
+    this.id,
     required this.variantId,
     required this.name,
     required this.price,

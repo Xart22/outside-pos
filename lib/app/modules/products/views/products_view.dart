@@ -67,7 +67,6 @@ class ProductsView extends GetView<ProductsController> {
                     indicatorSize: TabBarIndicatorSize.tab,
                     tabs: controller.listTab.map((tab) {
                       return GestureDetector(
-                        onLongPress: () => print('Long pressed on ${tab.text}'),
                         child: Tab(
                           text: tab.text,
                           icon: tab.icon,
@@ -98,7 +97,7 @@ class ProductsView extends GetView<ProductsController> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  controller.showModalProduct();
+                                  Get.toNamed('/menu-form');
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
@@ -139,7 +138,11 @@ class ProductsView extends GetView<ProductsController> {
                                   item: '${menu.stock} items',
                                   edit: true,
                                   onTap: () {
-                                    controller.showModalProduct(menu: menu);
+                                    Get.toNamed(
+                                      '/menu-form',
+                                      arguments: {'menu': menu},
+                                      preventDuplicates: false,
+                                    );
                                   },
                                 );
                               }),

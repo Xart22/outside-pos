@@ -1,4 +1,5 @@
 import 'package:pos_getx/app/data/model/categories_model.dart';
+import 'package:pos_getx/app/data/model/variant_model.dart';
 
 class Menu {
   final int id;
@@ -11,6 +12,7 @@ class Menu {
   final int isActive;
   final int isOnline;
   final Category category;
+  final List<VariantElement> variants;
 
   Menu({
     required this.id,
@@ -23,6 +25,7 @@ class Menu {
     required this.isActive,
     required this.isOnline,
     required this.category,
+    required this.variants,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
@@ -36,6 +39,8 @@ class Menu {
         isActive: json["is_active"],
         isOnline: json["is_online"],
         category: Category.fromJson(json["category"]),
+        variants: List<VariantElement>.from(
+            json["variants"].map((x) => VariantElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -49,5 +54,26 @@ class Menu {
         "is_active": isActive,
         "is_online": isOnline,
         "category": category.toJson(),
+        "variants": List<dynamic>.from(variants.map((x) => x.toJson())),
+      };
+}
+
+class VariantElement {
+  final int id;
+  final Variant variant;
+
+  VariantElement({
+    required this.id,
+    required this.variant,
+  });
+
+  factory VariantElement.fromJson(Map<String, dynamic> json) => VariantElement(
+        id: json["id"],
+        variant: Variant.fromJson(json["variant"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "variant": variant.toJson(),
       };
 }

@@ -8,6 +8,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/menu_form/bindings/menu_form_binding.dart';
+import '../modules/menu_form/views/menu_form_view.dart';
 import '../modules/products/bindings/products_binding.dart';
 import '../modules/products/views/products_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
@@ -72,6 +74,11 @@ class AppPages {
       name: _Paths.VARIANT_FORM,
       page: () => const VariantFormView(),
       binding: VariantFormBinding(),
+    ),
+    GetPage(
+      name: _Paths.MENU_FORM,
+      page: () => const MenuFormView(),
+      binding: MenuFormBinding(),
     ),
   ];
 }

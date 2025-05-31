@@ -30,7 +30,9 @@ class VariantsView extends GetView<VariantsController> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Get.toNamed('/variant-form');
+                    Get.toNamed('/variant-form')?.then((value) {
+                      controller.getVariants();
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff1A1A1A),
@@ -93,7 +95,7 @@ class VariantsView extends GetView<VariantsController> {
                             Get.toNamed('/variant-form', arguments: {
                               'variant': controller.variants[index],
                               'isEdit': true,
-                            });
+                            })?.then((value) => controller.getVariants());
                           }),
                     );
                   },

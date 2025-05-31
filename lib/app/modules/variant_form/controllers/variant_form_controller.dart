@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_getx/app/data/model/variant_model.dart';
+import 'package:pos_getx/app/data/repository/variants_repository.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/Input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class VariantFormController extends GetxController {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController optionsController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
+  final nameController = TextEditingController();
+  final optionsController = TextEditingController();
+  final priceController = TextEditingController();
+  final rulesMinController = false.obs;
+  final rulesMaxController = false.obs;
+  final rulesMin = TextEditingController();
 
+  final formChange = false.obs;
   final listOption = <Option>[].obs;
   final editMode = false.obs;
   final isLoading = false.obs;
@@ -63,6 +68,7 @@ class VariantFormController extends GetxController {
                             : 0,
                         position: listOption.length + 1,
                       ));
+                      formChange.value = true;
                       optionsController.clear();
                       priceController.clear();
                       Get.back();
@@ -99,7 +105,6 @@ class VariantFormController extends GetxController {
   }
 
   void clearForm() {
-    nameController.clear();
     optionsController.clear();
     priceController.clear();
   }
@@ -117,16 +122,41 @@ class VariantFormController extends GetxController {
     final variant = Variant(
       id: editMode.value ? listOption.first.variantId : 0,
       name: nameController.text,
-      rulesMin: 0,
-      rulesMax: 0,
+      rulesMin: rulesMinController.value ? 1 : 0,
+      rulesMax: int.parse(rulesMin.text) > 1 ? int.parse(rulesMin.text) : 1,
       options: listOption.toList(),
     );
 
     isLoading.value = true;
-    Future.delayed(const Duration(seconds: 2), () {
-      isLoading.value = false;
-      Get.back(result: variant);
-    });
+    if (editMode.value) {
+      final result = VariantsRepository.updateVariant(variant);
+      result.then((success) {
+        isLoading.value = false;
+        if (success) {
+          Get.back(result: true);
+          showSnackbar("Sukses", "Variant berhasil disimpan");
+        } else {
+          showSnackbar("Error", "Gagal menyimpan variant");
+        }
+      }).catchError((error) {
+        isLoading.value = false;
+        showSnackbar("Error", error.toString());
+      });
+    } else {
+      final result = VariantsRepository.createVariant(variant);
+      result.then((success) {
+        isLoading.value = false;
+        if (success) {
+          Get.back(result: true);
+          showSnackbar("Sukses", "Variant berhasil disimpan");
+        } else {
+          showSnackbar("Error", "Gagal menyimpan variant");
+        }
+      }).catchError((error) {
+        isLoading.value = false;
+        showSnackbar("Error", error.toString());
+      });
+    }
   }
 
   @override
@@ -137,6 +167,9 @@ class VariantFormController extends GetxController {
         final variant = args['variant'] as Variant;
         nameController.text = variant.name;
         listOption.assignAll(variant.options);
+        rulesMinController.value = variant.rulesMin > 0;
+        rulesMaxController.value = variant.rulesMax > 1;
+        rulesMin.text = variant.rulesMax.toString();
       }
       if (args['isEdit'] != null && args['isEdit'] is bool) {
         editMode.value = args['isEdit'];

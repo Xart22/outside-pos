@@ -61,19 +61,23 @@ class Menu {
 class VariantElement {
   final int id;
   final Variant variant;
+  final int position;
 
   VariantElement({
     required this.id,
     required this.variant,
+    required this.position,
   });
 
   factory VariantElement.fromJson(Map<String, dynamic> json) => VariantElement(
         id: json["id"],
         variant: Variant.fromJson(json["variant"]),
+        position: json["position"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "variant": variant.toJson(),
+        "position": position,
       };
 }

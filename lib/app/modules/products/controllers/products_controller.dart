@@ -418,32 +418,32 @@ class ProductsController extends GetxController
         showSnackbar("Error", "Produk gagal diperbarui");
       }
     } else {
-      final result = await ProductsRepository.createProduct(
-        name: nameController.text,
-        price: priceController.text,
-        description: descriptionController.text,
-        categoryId: categorySelected.value,
-        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
-        isOnline: isOnline.value,
-        stock: stockController.text.isEmpty ? '0' : stockController.text,
-      );
+      // final result = await ProductsRepository.createProduct(
+      //   name: nameController.text,
+      //   price: priceController.text,
+      //   description: descriptionController.text,
+      //   categoryId: categorySelected.value,
+      //   imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+      //   isOnline: isOnline.value,
+      //   stock: stockController.text.isEmpty ? '0' : stockController.text,
+      // );
 
-      globalState.isLoading.value = false;
+      // globalState.isLoading.value = false;
 
-      if (result) {
-        getAllData();
-        Get.back();
-        showSnackbar("Success", "Produk berhasil ditambahkan");
-        nameController.clear();
-        priceController.clear();
-        descriptionController.clear();
-        imageFile.value = null;
-        categorySelected.value = 0;
-        isOnline.value = false;
-        stockController.clear();
-      } else {
-        showSnackbar("Error", "Produk gagal ditambahkan");
-      }
+      // if (result) {
+      //   getAllData();
+      //   Get.back();
+      //   showSnackbar("Success", "Produk berhasil ditambahkan");
+      //   nameController.clear();
+      //   priceController.clear();
+      //   descriptionController.clear();
+      //   imageFile.value = null;
+      //   categorySelected.value = 0;
+      //   isOnline.value = false;
+      //   stockController.clear();
+      // } else {
+      //   showSnackbar("Error", "Produk gagal ditambahkan");
+      // }
     }
   }
 

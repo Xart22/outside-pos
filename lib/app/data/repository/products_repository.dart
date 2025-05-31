@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pos_getx/app/data/model/menu_model.dart';
+import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/data/provider/api_provider.dart';
 
 class ProductsRepository {
@@ -24,7 +25,9 @@ class ProductsRepository {
       required int categoryId,
       required String stock,
       File? imageFile,
-      bool isOnline = false}) async {
+      bool isOnline = false,
+      bool isActive = true,
+      required List<Variant> variant}) async {
     var imageLocal = "";
 
     if (imageFile != null) {
@@ -42,8 +45,15 @@ class ProductsRepository {
       'description': description,
       'category_id': categoryId,
       'is_online': isOnline == true ? 1 : 0,
+      'is_active': isActive == true ? 1 : 0,
       'image_local': imageLocal,
       'stock': stock,
+      'variants': variant
+          .map((v) => {
+                'id': v.id,
+                'position': v.position,
+              })
+          .toList(),
     };
 
     return ApiClient.upload('/menu/store', requestBody, imageFile!.path)
@@ -51,8 +61,16 @@ class ProductsRepository {
       if (response.statusCode == 200) {
         return true;
       } else if (response.statusCode == 400) {
+        print('Failed to create product: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return false;
+      } else if (response.body.contains('Integrity constraint')) {
+        print('Failed to create product: ${response.statusCode}');
+        print('Response: ${response.body}');
         return false;
       } else {
+        print('Failed to create product: ${response.statusCode}');
+        print('Response: ${response.body}');
         throw Exception('Failed to create product');
       }
     });

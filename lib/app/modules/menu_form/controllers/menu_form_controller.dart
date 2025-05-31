@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,8 +7,10 @@ import 'package:pos_getx/app/data/model/categories_model.dart';
 import 'package:pos_getx/app/data/model/menu_model.dart';
 import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/data/repository/categories_repository.dart';
+import 'package:pos_getx/app/data/repository/products_repository.dart';
 import 'package:pos_getx/app/data/repository/variants_repository.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
+import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class MenuFormController extends GetxController {
   TextEditingController searchController = TextEditingController();
@@ -56,6 +60,10 @@ class MenuFormController extends GetxController {
                     activeColor: AppColors.primary,
                     onChanged: (bool? value) {
                       if (value == true) {
+                        listVariant[index].position =
+                            listSelectedVariant.isEmpty
+                                ? 0
+                                : listSelectedVariant.last.position! + 1;
                         listSelectedVariant.add(listVariant[index]);
                       } else {
                         listSelectedVariant.remove(listVariant[index]);
@@ -71,6 +79,68 @@ class MenuFormController extends GetxController {
         child: Text('OK'),
       ),
     );
+  }
+
+  Future<bool> validateForm() async {
+    nameError.value = '';
+    priceError.value = '';
+    descriptionError.value = '';
+    stockError.value = '';
+
+    if (nameController.text.isEmpty) {
+      nameError.value = 'Nama tidak boleh kosong';
+      return false;
+    }
+    if (priceController.text.isEmpty) {
+      priceError.value = 'Harga tidak boleh kosong';
+      return false;
+    }
+    if (descriptionController.text.isEmpty) {
+      descriptionError.value = 'Deskripsi tidak boleh kosong';
+      return false;
+    }
+    if (stockController.text.isEmpty) {
+      stockError.value = 'Stok tidak boleh kosong';
+      return false;
+    }
+    if (categorySelected.value == 0) {
+      showSnackbar(
+        "Peringatan",
+        "Silakan pilih kategori untuk produk ini",
+      );
+      return false;
+    }
+    if (listSelectedVariant.isEmpty) {
+      showSnackbar(
+        "Peringatan",
+        "Silakan pilih variant untuk produk ini",
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  void saveMenu() async {
+    if (!await validateForm()) return;
+    final result = await ProductsRepository.createProduct(
+      name: nameController.text,
+      price: priceController.text,
+      description: descriptionController.text,
+      categoryId: categorySelected.value,
+      imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+      isOnline: isOnline.value,
+      isActive: isActive.value,
+      stock: stockController.text.isEmpty ? '0' : stockController.text,
+      variant: listSelectedVariant,
+    );
+
+    if (result) {
+      Get.back();
+      showSnackbar("Success", "Produk berhasil ditambahkan");
+    } else {
+      showSnackbar("Error", "Gagal menambahkan produk");
+    }
   }
 
   @override

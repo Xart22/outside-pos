@@ -3,6 +3,7 @@ class Variant {
   final String name;
   final int rulesMin;
   final int rulesMax;
+  int? position;
   final List<Option> options;
 
   Variant({
@@ -10,6 +11,7 @@ class Variant {
     required this.name,
     required this.rulesMin,
     required this.rulesMax,
+    this.position,
     required this.options,
   });
 

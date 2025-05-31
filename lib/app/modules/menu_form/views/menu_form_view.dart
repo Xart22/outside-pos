@@ -71,6 +71,9 @@ class MenuFormView extends GetView<MenuFormController> {
                       errorText: controller.nameError.value.isNotEmpty
                           ? controller.nameError.value
                           : null,
+                      onTap: () {
+                        controller.nameError.value = '';
+                      },
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -88,6 +91,9 @@ class MenuFormView extends GetView<MenuFormController> {
                         FilteringTextInputFormatter.digitsOnly,
                         CurrencyInputFormatter(),
                       ],
+                      onTap: () {
+                        controller.priceError.value = '';
+                      },
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -100,6 +106,9 @@ class MenuFormView extends GetView<MenuFormController> {
                       errorText: controller.descriptionError.value.isNotEmpty
                           ? controller.descriptionError.value
                           : null,
+                      onTap: () {
+                        controller.descriptionError.value = '';
+                      },
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -115,8 +124,10 @@ class MenuFormView extends GetView<MenuFormController> {
                           : null,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        CurrencyInputFormatter(),
                       ],
+                      onTap: () {
+                        controller.stockError.value = '';
+                      },
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -261,6 +272,8 @@ class MenuFormView extends GetView<MenuFormController> {
                                 .removeAt(oldIndex);
                             controller.listSelectedVariant
                                 .insert(newIndex, item);
+                            controller.listSelectedVariant[newIndex].position =
+                                newIndex + 1;
                           },
                           itemBuilder: (context, index) {
                             final option =
@@ -282,7 +295,6 @@ class MenuFormView extends GetView<MenuFormController> {
                                         .removeAt(index);
                                   },
                                 ),
-                                onTap: () => {},
                               ),
                             );
                           },
@@ -301,7 +313,9 @@ class MenuFormView extends GetView<MenuFormController> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.saveMenu();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 16),

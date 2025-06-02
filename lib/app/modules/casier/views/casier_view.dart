@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_getx/app/modules/casier/views/payment_view.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/item_menu.dart';
 import 'package:pos_getx/app/widgets/search.dart';
@@ -13,10 +14,11 @@ class CasierView extends GetView<CasierController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff121212),
+      resizeToAvoidBottomInset: false,
       body: Row(
         children: [
           Container(
-            width: Get.width / 1.5,
+            width: Get.width / 1.8,
             padding: const EdgeInsets.all(20),
             margin: const EdgeInsets.all(15),
             decoration: const BoxDecoration(
@@ -107,7 +109,7 @@ class CasierView extends GetView<CasierController> {
                               }
                               return GridView.count(
                                 crossAxisCount: 4,
-                                childAspectRatio: 0.84,
+                                childAspectRatio: 0.91,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 children: [
@@ -128,7 +130,7 @@ class CasierView extends GetView<CasierController> {
                             } else {
                               return GridView.count(
                                 crossAxisCount: 4,
-                                childAspectRatio: 0.84,
+                                childAspectRatio: 0.91,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 children: controller.filteredMenu
@@ -157,18 +159,13 @@ class CasierView extends GetView<CasierController> {
           ),
           Expanded(
             child: Container(
-              margin: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Color(0xff1A1A1A),
-              ),
-              child: Center(
-                child: Text(
-                  'Payment',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                margin: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Color(0xff1A1A1A),
                 ),
-              ),
-            ),
+                child: PaymentView()),
           ),
         ],
       ),

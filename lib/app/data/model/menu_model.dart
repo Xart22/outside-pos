@@ -12,7 +12,7 @@ class Menu {
   final int isActive;
   final int isOnline;
   final Category category;
-  final List<VariantElement> variants;
+  final List<VariantElement> variantsElement;
 
   Menu({
     required this.id,
@@ -25,7 +25,7 @@ class Menu {
     required this.isActive,
     required this.isOnline,
     required this.category,
-    required this.variants,
+    required this.variantsElement,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
@@ -39,7 +39,7 @@ class Menu {
         isActive: json["is_active"],
         isOnline: json["is_online"],
         category: Category.fromJson(json["category"]),
-        variants: List<VariantElement>.from(
+        variantsElement: List<VariantElement>.from(
             json["variants"].map((x) => VariantElement.fromJson(x))),
       );
 
@@ -54,7 +54,7 @@ class Menu {
         "is_active": isActive,
         "is_online": isOnline,
         "category": category.toJson(),
-        "variants": List<dynamic>.from(variants.map((x) => x.toJson())),
+        "variants": List<dynamic>.from(variantsElement.map((x) => x.toJson())),
       };
 }
 

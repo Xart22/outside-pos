@@ -91,7 +91,7 @@ class ProductsView extends GetView<ProductsController> {
                         if (tab.text == 'All') {
                           return GridView.count(
                             crossAxisCount: 5,
-                            childAspectRatio: 0.7,
+                            childAspectRatio: 0.89,
                             crossAxisSpacing: 20,
                             mainAxisSpacing: 20,
                             children: [
@@ -155,7 +155,7 @@ class ProductsView extends GetView<ProductsController> {
                         } else {
                           return GridView.count(
                             crossAxisCount: 5,
-                            childAspectRatio: 0.7,
+                            childAspectRatio: 0.89,
                             crossAxisSpacing: 20,
                             mainAxisSpacing: 20,
                             children: controller.listMenu

@@ -180,12 +180,13 @@ class MenuFormController extends GetxController {
       editMode.value = true;
       nameController.text = menu.value!.name;
       priceController.text = menu.value!.price.toString();
-      descriptionController.text = menu.value!.description ?? '';
+      descriptionController.text = menu.value!.description;
       stockController.text = menu.value!.stock.toString();
       isActive.value = menu.value!.isActive == 1 ? true : false;
       isOnline.value = menu.value!.isOnline == 1 ? true : false;
       categorySelected.value = menu.value!.category.id;
-      listSelectedVariant.addAll(menu.value!.variants.map((e) => e.variant));
+      listSelectedVariant
+          .addAll(menu.value!.variantsElement.map((e) => e.variant));
     }
   }
 

@@ -23,7 +23,7 @@ Widget itemMenu({
         GestureDetector(
           onTap: addToCart,
           child: Container(
-            height: 130,
+            height: 100,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               image: DecorationImage(
@@ -33,16 +33,17 @@ Widget itemMenu({
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Text(
           title,
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 14,
           ),
+          overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -50,19 +51,19 @@ Widget itemMenu({
               price,
               style: const TextStyle(
                 color: Colors.deepOrange,
-                fontSize: 18,
+                fontSize: 12,
               ),
             ),
             Text(
               item,
               style: const TextStyle(
                 color: Colors.white60,
-                fontSize: 12,
+                fontSize: 10,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         if (edit)
           SizedBox(
             width: double.infinity,

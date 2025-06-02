@@ -9,6 +9,7 @@ Widget itemMenu({
   required String item,
   required bool edit,
   Function()? onTap,
+  Function()? addToCart,
 }) {
   return Container(
     padding: const EdgeInsets.all(12),
@@ -19,13 +20,16 @@ Widget itemMenu({
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          height: 130,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(imageUrl(image)),
-              fit: BoxFit.cover,
+        GestureDetector(
+          onTap: addToCart,
+          child: Container(
+            height: 130,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(imageUrl(image)),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),

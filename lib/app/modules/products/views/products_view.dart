@@ -97,7 +97,9 @@ class ProductsView extends GetView<ProductsController> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Get.toNamed('/menu-form');
+                                  Get.toNamed('/menu-form')?.then((value) {
+                                    controller.getAllData();
+                                  });
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
@@ -142,7 +144,9 @@ class ProductsView extends GetView<ProductsController> {
                                       '/menu-form',
                                       arguments: {'menu': menu},
                                       preventDuplicates: false,
-                                    );
+                                    )?.then((value) {
+                                      controller.getAllData();
+                                    });
                                   },
                                 );
                               }),
@@ -164,7 +168,13 @@ class ProductsView extends GetView<ProductsController> {
                                 item: '${menu.stock} items',
                                 edit: true,
                                 onTap: () {
-                                  controller.showModalProduct(menu: menu);
+                                  Get.toNamed(
+                                    '/menu-form',
+                                    arguments: {'menu': menu},
+                                    preventDuplicates: false,
+                                  )?.then((value) {
+                                    controller.getAllData();
+                                  });
                                 },
                               );
                             }).toList(),

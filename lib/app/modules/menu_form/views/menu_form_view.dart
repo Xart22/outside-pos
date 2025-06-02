@@ -131,17 +131,18 @@ class MenuFormView extends GetView<MenuFormController> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SelectSearch(
-                    label: "Kategori",
-                    data: controller.listCategories,
-                    selectedItem: controller.listCategories.firstWhereOrNull(
-                        (e) => e.id == controller.categorySelected.value),
-                    onChanged: (value) {
-                      if (value != null) {
-                        controller.categorySelected.value = value;
-                      }
-                    },
-                  ),
+                  Obx(() => SelectSearch(
+                        label: "Kategori",
+                        data: controller.listCategories,
+                        selectedItem: controller.listCategories
+                            .firstWhereOrNull((e) =>
+                                e.id == controller.categorySelected.value),
+                        onChanged: (value) {
+                          if (value != null) {
+                            controller.categorySelected.value = value;
+                          }
+                        },
+                      )),
                   const SizedBox(height: 20),
                   Obx(
                     () => Row(
@@ -272,8 +273,13 @@ class MenuFormView extends GetView<MenuFormController> {
                                 .removeAt(oldIndex);
                             controller.listSelectedVariant
                                 .insert(newIndex, item);
-                            controller.listSelectedVariant[newIndex].position =
-                                newIndex + 1;
+                            for (int i = 0;
+                                i < controller.listSelectedVariant.length;
+                                i++) {
+                              controller.listSelectedVariant[i].position =
+                                  i + 1;
+                            }
+                            controller.listSelectedVariant.refresh();
                           },
                           itemBuilder: (context, index) {
                             final option =
@@ -314,7 +320,7 @@ class MenuFormView extends GetView<MenuFormController> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        controller.saveMenu();
+                        controller.createOrUpdateMenu();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,

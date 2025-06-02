@@ -118,12 +118,11 @@ class VariantFormController extends GetxController {
       showSnackbar("Error", "Pilihan variant tidak boleh kosong");
       return;
     }
-
     final variant = Variant(
       id: editMode.value ? listOption.first.variantId : 0,
       name: nameController.text,
       rulesMin: rulesMinController.value ? 1 : 0,
-      rulesMax: int.parse(rulesMin.text) > 1 ? int.parse(rulesMin.text) : 1,
+      rulesMax: rulesMin.text.isNotEmpty ? int.parse(rulesMin.text) : 1,
       options: listOption.toList(),
     );
 

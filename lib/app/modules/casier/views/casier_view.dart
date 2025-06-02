@@ -118,6 +118,9 @@ class CasierView extends GetView<CasierController> {
                                       price: formatRupiah(menu.price),
                                       item: '${menu.stock} items',
                                       edit: false,
+                                      addToCart: () {
+                                        controller.addToCart(menu);
+                                      },
                                     );
                                   }),
                                 ],
@@ -138,6 +141,9 @@ class CasierView extends GetView<CasierController> {
                                     price: formatRupiah(menu.price),
                                     item: '${menu.stock} items',
                                     edit: false,
+                                    addToCart: () {
+                                      controller.addToCart(menu);
+                                    },
                                   );
                                 }).toList(),
                               );

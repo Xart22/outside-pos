@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/casier/bindings/casier_binding.dart';
 import '../modules/casier/views/casier_view.dart';
+import '../modules/casier_form/bindings/casier_form_binding.dart';
+import '../modules/casier_form/views/casier_form_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -79,6 +81,11 @@ class AppPages {
       name: _Paths.MENU_FORM,
       page: () => const MenuFormView(),
       binding: MenuFormBinding(),
+    ),
+    GetPage(
+      name: _Paths.CASIER_FORM,
+      page: () => const CasierFormView(),
+      binding: CasierFormBinding(),
     ),
   ];
 }

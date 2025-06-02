@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -6,13 +9,19 @@ import 'package:pos_getx/app/data/model/categories_model.dart';
 import 'package:pos_getx/app/data/model/menu_model.dart';
 import 'package:pos_getx/app/data/repository/categories_repository.dart';
 import 'package:pos_getx/app/data/repository/products_repository.dart';
+import 'package:pos_getx/app/widgets/Input_field.dart';
 
 class CasierController extends GetxController with GetTickerProviderStateMixin {
   TextEditingController searchController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
   final today = "".obs;
   final listMenu = <Menu>[].obs;
   final filteredMenu = <Menu>[].obs;
   final listCategories = <Category>[].obs;
+  final Map<int, int> selectedOptions = {};
+
+  final totalPrice = 0.0.obs;
+
   late TabController tabController;
   final listTab = [
     Tab(
@@ -23,6 +32,7 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
       )),
     ),
   ].obs;
+
   void getAllData() async {
     listMenu.value = await ProductsRepository.getProducts();
     filteredMenu.value = listMenu;
@@ -44,7 +54,6 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
     }
 
     tabController = TabController(length: listTab.length, vsync: this);
-    // globalState.isLoading.value = false;
   }
 
   void searchMenu(String query) {
@@ -55,6 +64,15 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
           .where(
               (menu) => menu.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
+    }
+  }
+
+  void addToCart(Menu menu) {
+    if (menu.variants.isEmpty) {
+    } else {
+      Get.toNamed('/casier-form', arguments: {
+        'menu': menu,
+      });
     }
   }
 

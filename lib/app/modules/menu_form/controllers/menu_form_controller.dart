@@ -53,24 +53,25 @@ class MenuFormController extends GetxController {
           shrinkWrap: true,
           itemCount: listVariant.length,
           itemBuilder: (context, index) {
-            return Obx(() => Card(
-                  child: CheckboxListTile(
-                    title: Text(listVariant[index].name),
-                    value: listSelectedVariant.contains(listVariant[index]),
-                    activeColor: AppColors.primary,
-                    onChanged: (bool? value) {
-                      if (value == true) {
-                        listVariant[index].position =
-                            listSelectedVariant.isEmpty
-                                ? 0
-                                : listSelectedVariant.last.position! + 1;
-                        listSelectedVariant.add(listVariant[index]);
-                      } else {
-                        listSelectedVariant.remove(listVariant[index]);
-                      }
-                    },
-                  ),
-                ));
+            final variant = listVariant[index];
+            return Card(
+              child: Obx(() {
+                final isSelected = listSelectedVariant.contains(variant);
+                return CheckboxListTile(
+                  title: Text(variant.name),
+                  value: isSelected,
+                  activeColor: AppColors.primary,
+                  onChanged: (bool? value) {
+                    if (value == true) {
+                      variant.position = listSelectedVariant.length + 1;
+                      listSelectedVariant.add(variant);
+                    } else {
+                      listSelectedVariant.remove(variant);
+                    }
+                  },
+                );
+              }),
+            );
           },
         ),
       ),
@@ -79,6 +80,17 @@ class MenuFormController extends GetxController {
         child: Text('OK'),
       ),
     );
+  }
+
+  void reorderVariant(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex--;
+
+    final item = listSelectedVariant.removeAt(oldIndex);
+    listSelectedVariant.insert(newIndex, item);
+
+    for (int i = 0; i < listSelectedVariant.length; i++) {
+      listSelectedVariant[i].position = i + 1;
+    }
   }
 
   Future<bool> validateForm() async {
@@ -110,36 +122,52 @@ class MenuFormController extends GetxController {
       );
       return false;
     }
-    if (listSelectedVariant.isEmpty) {
-      showSnackbar(
-        "Peringatan",
-        "Silakan pilih variant untuk produk ini",
-      );
-      return false;
-    }
 
     return true;
   }
 
-  void saveMenu() async {
+  void createOrUpdateMenu() async {
     if (!await validateForm()) return;
-    final result = await ProductsRepository.createProduct(
-      name: nameController.text,
-      price: priceController.text,
-      description: descriptionController.text,
-      categoryId: categorySelected.value,
-      imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
-      isOnline: isOnline.value,
-      isActive: isActive.value,
-      stock: stockController.text.isEmpty ? '0' : stockController.text,
-      variant: listSelectedVariant,
-    );
 
-    if (result) {
-      Get.back();
-      showSnackbar("Success", "Produk berhasil ditambahkan");
+    if (editMode.value) {
+      final result = await ProductsRepository.updateProduct(
+        id: menu.value!.id,
+        name: nameController.text,
+        price: priceController.text,
+        description: descriptionController.text,
+        categoryId: categorySelected.value,
+        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+        isOnline: isOnline.value,
+        isActive: isActive.value,
+        stock: stockController.text.isEmpty ? '0' : stockController.text,
+        variant: listSelectedVariant,
+      );
+
+      if (result) {
+        Get.back();
+        showSnackbar("Success", "Produk berhasil diperbarui");
+      } else {
+        showSnackbar("Error", "Gagal memperbarui produk");
+      }
     } else {
-      showSnackbar("Error", "Gagal menambahkan produk");
+      final result = await ProductsRepository.createProduct(
+        name: nameController.text,
+        price: priceController.text,
+        description: descriptionController.text,
+        categoryId: categorySelected.value,
+        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
+        isOnline: isOnline.value,
+        isActive: isActive.value,
+        stock: stockController.text.isEmpty ? '0' : stockController.text,
+        variant: listSelectedVariant,
+      );
+
+      if (result) {
+        Get.back();
+        showSnackbar("Success", "Produk berhasil ditambahkan");
+      } else {
+        showSnackbar("Error", "Gagal menambahkan produk");
+      }
     }
   }
 

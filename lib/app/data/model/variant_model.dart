@@ -20,6 +20,7 @@ class Variant {
         name: json["name"],
         rulesMin: json["rules_min"],
         rulesMax: json["rules_max"],
+        position: json["position"],
         options:
             List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
       );
@@ -29,6 +30,7 @@ class Variant {
         "name": name,
         "rules_min": rulesMin,
         "rules_max": rulesMax,
+        "position": position,
         "options": List<dynamic>.from(options.map((x) => x.toJson())),
       };
 }

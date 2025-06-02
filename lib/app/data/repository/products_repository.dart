@@ -48,12 +48,12 @@ class ProductsRepository {
       'is_active': isActive == true ? 1 : 0,
       'image_local': imageLocal,
       'stock': stock,
-      'variants': variant
+      'variants': jsonEncode(variant
           .map((v) => {
                 'id': v.id,
                 'position': v.position,
               })
-          .toList(),
+          .toList()),
     };
 
     return ApiClient.upload('/menu/store', requestBody, imageFile!.path)
@@ -61,16 +61,10 @@ class ProductsRepository {
       if (response.statusCode == 200) {
         return true;
       } else if (response.statusCode == 400) {
-        print('Failed to create product: ${response.statusCode}');
-        print('Response: ${response.body}');
         return false;
       } else if (response.body.contains('Integrity constraint')) {
-        print('Failed to create product: ${response.statusCode}');
-        print('Response: ${response.body}');
         return false;
       } else {
-        print('Failed to create product: ${response.statusCode}');
-        print('Response: ${response.body}');
         throw Exception('Failed to create product');
       }
     });
@@ -84,7 +78,9 @@ class ProductsRepository {
       required int categoryId,
       required String stock,
       File? imageFile,
-      bool isOnline = false}) async {
+      bool isOnline = false,
+      bool isActive = true,
+      required List<Variant> variant}) async {
     var imageLocal = "";
 
     if (imageFile != null) {
@@ -102,8 +98,15 @@ class ProductsRepository {
       'description': description,
       'category_id': categoryId,
       'is_online': isOnline == true ? 1 : 0,
-      if (imageLocal != "") 'image_local': imageLocal,
+      'is_active': isActive == true ? 1 : 0,
+      'image_local': imageLocal,
       'stock': stock,
+      'variants': jsonEncode(variant
+          .map((v) => {
+                'id': v.id,
+                'position': v.position,
+              })
+          .toList()),
     };
 
     return ApiClient.upload('/menu/update/$id', requestBody, imageFile?.path)
@@ -115,6 +118,8 @@ class ProductsRepository {
       } else if (response.statusCode == 400) {
         return false;
       } else {
+        print('Failed to update product: ${response.statusCode}');
+        print('Response: ${response.body}');
         throw Exception('Failed to create product');
       }
     });

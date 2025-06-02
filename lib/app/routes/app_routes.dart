@@ -16,6 +16,7 @@ abstract class Routes {
   static const VARIANTS = _Paths.VARIANTS;
   static const VARIANT_FORM = _Paths.VARIANT_FORM;
   static const MENU_FORM = _Paths.MENU_FORM;
+  static const CASIER_FORM = _Paths.CASIER_FORM;
 }
 
 abstract class _Paths {
@@ -33,4 +34,5 @@ abstract class _Paths {
   static const VARIANTS = '/variants';
   static const VARIANT_FORM = '/variant-form';
   static const MENU_FORM = '/menu-form';
+  static const CASIER_FORM = '/casier-form';
 }

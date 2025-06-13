@@ -109,7 +109,7 @@ class CasierView extends GetView<CasierController> {
                               }
                               return GridView.count(
                                 crossAxisCount: 4,
-                                childAspectRatio: 0.91,
+                                childAspectRatio: 0.75,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 children: [
@@ -130,7 +130,7 @@ class CasierView extends GetView<CasierController> {
                             } else {
                               return GridView.count(
                                 crossAxisCount: 4,
-                                childAspectRatio: 0.91,
+                                childAspectRatio: 0.75,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 children: controller.filteredMenu

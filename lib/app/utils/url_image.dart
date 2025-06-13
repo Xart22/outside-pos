@@ -1,4 +1,4 @@
-String baseUrl = 'http://192.168.1.2/pos/public/';
+String baseUrl = 'http://192.168.1.7/pos/public/';
 
 String imageUrl(String? image) {
   if (image == null || image.isEmpty) {

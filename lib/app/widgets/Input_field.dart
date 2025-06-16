@@ -18,6 +18,7 @@ class InputField extends StatelessWidget {
   final void Function()? onTap;
   final bool? readOnly;
   final List<TextInputFormatter> inputFormatters;
+  final void Function(String)? onChanged;
 
   const InputField({
     super.key,
@@ -35,6 +36,7 @@ class InputField extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.inputFormatters = const [],
+    this.onChanged,
   });
 
   @override
@@ -93,6 +95,7 @@ class InputField extends StatelessWidget {
           onTap: onTap,
           readOnly: readOnly!,
           inputFormatters: inputFormatters.isNotEmpty ? inputFormatters : [],
+          onChanged: onChanged,
         ),
       ],
     );

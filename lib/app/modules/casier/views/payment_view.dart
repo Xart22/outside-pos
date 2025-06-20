@@ -29,7 +29,7 @@ class PaymentView extends GetView<CasierController> {
         Text("Order Type",
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
             )),
         Row(
@@ -38,19 +38,22 @@ class PaymentView extends GetView<CasierController> {
             Text("Dine In",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
-            Obx(() => Switch(
-                  value: controller.isDineIn.value,
-                  onChanged: (value) {
-                    controller.isDineIn.value = value;
-                    if (value) {
-                      controller.customerTableController.clear();
-                    }
-                  },
-                  activeColor: Colors.green,
-                )),
+            SizedBox(
+              height: 10,
+              child: Obx(() => Switch(
+                    value: controller.isDineIn.value,
+                    onChanged: (value) {
+                      controller.isDineIn.value = value;
+                      if (value) {
+                        controller.customerTableController.clear();
+                      }
+                    },
+                    activeColor: Colors.green,
+                  )),
+            ),
           ],
         ),
         InputField(
@@ -63,6 +66,7 @@ class PaymentView extends GetView<CasierController> {
                 label: "Customer Table",
                 controller: controller.customerTableController,
                 textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.number,
               )
             : const SizedBox.shrink()),
         const SizedBox(height: 5),
@@ -72,20 +76,20 @@ class PaymentView extends GetView<CasierController> {
             Text("Item",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
             const SizedBox(width: 30),
             Text("Qty",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
             Text("Price",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
           ],
@@ -108,13 +112,13 @@ class PaymentView extends GetView<CasierController> {
             Text("Sub Total",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
             Obx(() => Text('${formatRupiah(controller.totalPrice.value)}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ))),
           ],
@@ -125,18 +129,18 @@ class PaymentView extends GetView<CasierController> {
             Text("Total",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
             Obx(() => Text('${formatRupiah(controller.totalPrice.value)}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ))),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         SizedBox(
           width: Get.width,
           child: Obx(() => ElevatedButton(
@@ -161,8 +165,8 @@ class PaymentView extends GetView<CasierController> {
                   disabledBackgroundColor: const Color(0xffBDBDBD),
                 ),
                 child: const Text(
-                  'Process Payment',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  'Payment Method',
+                  style: TextStyle(fontSize: 12, color: Colors.white),
                 ),
               )),
         ),

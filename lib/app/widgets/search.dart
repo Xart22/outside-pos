@@ -27,6 +27,13 @@ class InputTextField extends StatelessWidget {
           Icons.search,
           color: Colors.white,
         ),
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.clear, color: Colors.white),
+          onPressed: () {
+            controller.clear();
+            onChanged('');
+          },
+        ),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         hintText: hintText,

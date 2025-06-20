@@ -109,9 +109,9 @@ class CasierView extends GetView<CasierController> {
                               }
                               return GridView.count(
                                 crossAxisCount: 4,
-                                childAspectRatio: 0.91,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
+                                childAspectRatio: 0.78,
+                                crossAxisSpacing: 5,
+                                mainAxisSpacing: 5,
                                 children: [
                                   ...controller.filteredMenu.map((menu) {
                                     return itemMenu(
@@ -130,9 +130,9 @@ class CasierView extends GetView<CasierController> {
                             } else {
                               return GridView.count(
                                 crossAxisCount: 4,
-                                childAspectRatio: 0.91,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
+                                childAspectRatio: 0.78,
+                                crossAxisSpacing: 5,
+                                mainAxisSpacing: 5,
                                 children: controller.filteredMenu
                                     .where((menu) =>
                                         menu.category.name == tab.text)

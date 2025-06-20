@@ -73,7 +73,7 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
 
   void addToCart(Menu menu) {
     final eq = const MapEquality();
-
+    print(menu.variantsElement);
     if (menu.variantsElement.isEmpty) {
       final existingItem = listCart.firstWhereOrNull(
         (item) => item.menuId == menu.id && item.options.isEmpty,

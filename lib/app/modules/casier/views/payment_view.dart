@@ -25,7 +25,7 @@ class PaymentView extends GetView<CasierController> {
               fontSize: 12,
               fontWeight: FontWeight.w600,
             )),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Text("Order Type",
             style: const TextStyle(
               color: Colors.white,
@@ -57,7 +57,7 @@ class PaymentView extends GetView<CasierController> {
             label: "Customer Name",
             controller: controller.customerNameController,
             textInputAction: TextInputAction.next),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Obx(() => controller.isDineIn.value
             ? InputField(
                 label: "Customer Table",
@@ -65,7 +65,7 @@ class PaymentView extends GetView<CasierController> {
                 textInputAction: TextInputAction.done,
               )
             : const SizedBox.shrink()),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -90,9 +90,8 @@ class PaymentView extends GetView<CasierController> {
                 )),
           ],
         ),
-        const SizedBox(height: 10),
         SizedBox(
-          height: Get.height * 0.4,
+          height: Get.height * 0.35,
           child: Obx(() => ListView.builder(
                 shrinkWrap: true,
                 itemCount: controller.listCart.length,
@@ -103,7 +102,6 @@ class PaymentView extends GetView<CasierController> {
                 },
               )),
         ),
-        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

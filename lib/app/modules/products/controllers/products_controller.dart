@@ -45,80 +45,114 @@ class ProductsController extends GetxController
     ),
   ].obs;
 
-  void showModalCategory() {
-    Get.defaultDialog(
-      barrierDismissible: false,
-      contentPadding: const EdgeInsets.only(
-        top: 10,
-        left: 20,
-        right: 20,
-        bottom: 10,
-      ),
+  void showModalCategoryBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
       backgroundColor: const Color.fromARGB(255, 52, 52, 52),
-      title: 'Tambah Kategori',
-      titleStyle: const TextStyle(
-        color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      content: Column(
-        children: [
-          Obx(() => InputField(
-                label: "Nama Category",
-                hint: "Masukkan nama category",
-                controller: categoryController,
-                textInputAction: TextInputAction.next,
-                errorText:
-                    categoryError.value.isEmpty ? null : categoryError.value,
-              )),
-          const SizedBox(height: 8),
-          Obx(() => InputField(
-                label: "Icon",
-                hint: "Masukkan icon kategori",
-                controller: categoryIconController,
-                textInputAction: TextInputAction.next,
-                errorText: iconError.value.isEmpty ? null : iconError.value,
-              )),
-        ],
-      ),
-      confirm: Obx(() => ElevatedButton(
-            onPressed: () {
-              if (globalState.isLoading.value) return;
-              createCategory();
-            },
-            child: globalState.isLoading.value
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                      strokeWidth: 2,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Tambah Kategori',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Obx(() => InputField(
+                      label: "Nama Category",
+                      hint: "Masukkan nama category",
+                      controller: categoryController,
+                      textInputAction: TextInputAction.next,
+                      errorText: categoryError.value.isEmpty
+                          ? null
+                          : categoryError.value,
+                    )),
+                const SizedBox(height: 10),
+                Obx(() => InputField(
+                      label: "Icon",
+                      hint: "Masukkan icon kategori",
+                      controller: categoryIconController,
+                      textInputAction: TextInputAction.done,
+                      errorText:
+                          iconError.value.isEmpty ? null : iconError.value,
+                    )),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Obx(() => ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              if (globalState.isLoading.value) return;
+                              createCategory();
+                            },
+                            child: globalState.isLoading.value
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.primary,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Simpan',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                          )),
                     ),
-                  )
-                : const Text('Simpan'),
-          )),
-      cancel: Obx(() => ElevatedButton(
-            onPressed: () {
-              if (globalState.isLoading.value) return;
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Obx(() => ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            onPressed: () {
+                              if (globalState.isLoading.value) return;
 
-              categoryController.clear();
-              categoryIconController.clear();
-              categoryError.value = '';
-              iconError.value = '';
-              Get.back();
-              Get.back();
-            },
-            child: globalState.isLoading.value
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                      strokeWidth: 2,
+                              categoryController.clear();
+                              categoryIconController.clear();
+                              categoryError.value = '';
+                              iconError.value = '';
+                              Get.back();
+                            },
+                            child: globalState.isLoading.value
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text('Batal'),
+                          )),
                     ),
-                  )
-                : const Text('Batal'),
-          )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

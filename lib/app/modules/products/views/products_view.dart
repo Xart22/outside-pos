@@ -31,7 +31,7 @@ class ProductsView extends GetView<ProductsController> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    controller.showModalCategory();
+                    controller.showModalCategoryBottomSheet(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff1A1A1A),
@@ -91,9 +91,9 @@ class ProductsView extends GetView<ProductsController> {
                         if (tab.text == 'All') {
                           return GridView.count(
                             crossAxisCount: 5,
-                            childAspectRatio: 0.89,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
+                            childAspectRatio: 0.79,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5,
                             children: [
                               GestureDetector(
                                 onTap: () {
@@ -155,9 +155,9 @@ class ProductsView extends GetView<ProductsController> {
                         } else {
                           return GridView.count(
                             crossAxisCount: 5,
-                            childAspectRatio: 0.89,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
+                            childAspectRatio: 0.79,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5,
                             children: controller.listMenu
                                 .where((menu) => menu.category.name == tab.text)
                                 .map((menu) {

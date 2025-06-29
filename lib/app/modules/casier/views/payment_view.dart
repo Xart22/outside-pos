@@ -19,12 +19,12 @@ class PaymentView extends GetView<CasierController> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Order #12345",
+        Obx(() => Text(controller.orderNumber.value,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 12,
               fontWeight: FontWeight.w600,
-            )),
+            ))),
         const SizedBox(height: 5),
         Text("Order Type",
             style: const TextStyle(
@@ -47,9 +47,6 @@ class PaymentView extends GetView<CasierController> {
                     value: controller.isDineIn.value,
                     onChanged: (value) {
                       controller.isDineIn.value = value;
-                      if (value) {
-                        controller.customerTableController.clear();
-                      }
                     },
                     activeColor: Colors.green,
                   )),
@@ -57,18 +54,18 @@ class PaymentView extends GetView<CasierController> {
           ],
         ),
         InputField(
-            label: "Customer Name",
-            controller: controller.customerNameController,
-            textInputAction: TextInputAction.next),
-        const SizedBox(height: 5),
-        Obx(() => controller.isDineIn.value
-            ? InputField(
-                label: "Customer Table",
-                controller: controller.customerTableController,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.number,
-              )
-            : const SizedBox.shrink()),
+          label: "Customer Name",
+          controller: controller.customerNameController,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.text,
+        ),
+        InputField(
+          label: "Table Number",
+          controller: controller.tableNumberController,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
         const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +92,7 @@ class PaymentView extends GetView<CasierController> {
           ],
         ),
         SizedBox(
-          height: Get.height * 0.35,
+          height: Get.height * 0.44,
           child: Obx(() => ListView.builder(
                 shrinkWrap: true,
                 itemCount: controller.listCart.length,
@@ -115,7 +112,7 @@ class PaymentView extends GetView<CasierController> {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
-            Obx(() => Text('${formatRupiah(controller.totalPrice.value)}',
+            Obx(() => Text('${formatRupiah(controller.subTotal.value)}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -132,7 +129,8 @@ class PaymentView extends GetView<CasierController> {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
-            Obx(() => Text('${formatRupiah(controller.totalPrice.value)}',
+            Obx(() => Text(
+                '${formatRupiah(controller.subTotal.value - controller.totalDiscount.value)}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -152,12 +150,11 @@ class PaymentView extends GetView<CasierController> {
                               'Error', 'Customer name cannot be empty');
                           return;
                         }
-                        if (controller.isDineIn.value &&
-                            controller.customerTableController.text.isEmpty) {
-                          showSnackbar(
-                              'Error', 'Customer table cannot be empty');
+                        if (controller.tableNumberController.text.isEmpty) {
+                          showSnackbar('Error', 'Table number cannot be empty');
                           return;
                         }
+
                         controller.paymentModal();
                       },
                 style: ElevatedButton.styleFrom(
@@ -165,7 +162,7 @@ class PaymentView extends GetView<CasierController> {
                   disabledBackgroundColor: const Color(0xffBDBDBD),
                 ),
                 child: const Text(
-                  'Payment Method',
+                  'Process Payment',
                   style: TextStyle(fontSize: 12, color: Colors.white),
                 ),
               )),

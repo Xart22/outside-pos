@@ -201,7 +201,7 @@ class ProductsController extends GetxController
     });
   }
 
-  void getAllData() async {
+  getAllData() async {
     listMenu.value = await ProductsRepository.getProducts();
 
     listCategories.value = await CategoriesRepository.getCategories();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_getx/app/modules/casier/views/casier_view.dart';
+import 'package:pos_getx/app/modules/history/views/history_view.dart';
 import 'package:pos_getx/app/modules/products/views/products_view.dart';
 import 'package:pos_getx/app/modules/settings/views/settings_view.dart';
 import 'package:pos_getx/app/modules/variants/views/variants_view.dart';
@@ -70,12 +71,7 @@ class HomeView extends GetView<HomeController> {
         case 'Variants':
           return VariantsView();
         case 'History':
-          return const Center(
-            child: Text(
-              'History',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          );
+          return HistoryView();
         case 'Promos':
           return const Center(
             child: Text(

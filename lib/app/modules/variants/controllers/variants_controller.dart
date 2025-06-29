@@ -5,7 +5,7 @@ import 'package:pos_getx/app/data/repository/variants_repository.dart';
 class VariantsController extends GetxController {
   final variants = <Variant>[].obs;
 
-  void getVariants() async {
+  getVariants() async {
     final response = await VariantsRepository.getVariants();
     print("Variants: $response");
     variants.assignAll(response);

@@ -9,10 +9,12 @@ import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/data/repository/categories_repository.dart';
 import 'package:pos_getx/app/data/repository/products_repository.dart';
 import 'package:pos_getx/app/data/repository/variants_repository.dart';
+import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class MenuFormController extends GetxController {
+  final globalState = Get.find<GlobalState>();
   TextEditingController searchController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
@@ -127,6 +129,7 @@ class MenuFormController extends GetxController {
   }
 
   void createOrUpdateMenu() async {
+    globalState.isLoading.value = true;
     if (!await validateForm()) return;
 
     if (editMode.value) {
@@ -142,7 +145,7 @@ class MenuFormController extends GetxController {
         stock: stockController.text.isEmpty ? '0' : stockController.text,
         variant: listSelectedVariant,
       );
-
+      globalState.isLoading.value = false;
       if (result) {
         Get.back();
         showSnackbar("Success", "Produk berhasil diperbarui");
@@ -161,7 +164,7 @@ class MenuFormController extends GetxController {
         stock: stockController.text.isEmpty ? '0' : stockController.text,
         variant: listSelectedVariant,
       );
-
+      globalState.isLoading.value = false;
       if (result) {
         Get.back();
         showSnackbar("Success", "Produk berhasil ditambahkan");

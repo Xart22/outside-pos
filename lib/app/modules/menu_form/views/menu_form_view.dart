@@ -23,7 +23,7 @@ class MenuFormView extends GetView<MenuFormController> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Obx(() => Text(
-              controller.editMode.value ? 'Edit Variant' : 'Tambah Variant',
+              controller.editMode.value ? 'Edit Menu' : 'Tambah Menu',
               style: const TextStyle(color: Colors.white),
             )),
         actions: [
@@ -54,7 +54,7 @@ class MenuFormView extends GetView<MenuFormController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Detail Variant',
+                    'Detail Menu',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -320,6 +320,7 @@ class MenuFormView extends GetView<MenuFormController> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
+                        if (controller.globalState.isLoading.value) return;
                         controller.createOrUpdateMenu();
                       },
                       style: ElevatedButton.styleFrom(

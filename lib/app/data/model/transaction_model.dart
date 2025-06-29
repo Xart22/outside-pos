@@ -41,9 +41,9 @@ class Transaction {
   final String status;
   final int tableNumber;
   final String customerName;
-  final int cash;
-  final int change;
-  final int discount;
+  final int? cash;
+  final int? change;
+  final int? discount;
   final int totalPrice;
   final String paymentMethod;
   final dynamic paymentStatus;

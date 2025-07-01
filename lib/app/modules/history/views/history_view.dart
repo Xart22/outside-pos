@@ -32,7 +32,7 @@ class HistoryView extends GetView<HistoryController> {
               ),
             ),
             SizedBox(
-              height: Get.height * 0.55,
+              height: Get.height * 0.5,
               child: Obx(() => ListView.builder(
                     shrinkWrap: true,
                     itemCount: controller.transactions.length,
@@ -52,47 +52,114 @@ class HistoryView extends GetView<HistoryController> {
                   )),
             ),
             const SizedBox(height: 10),
-            Obx(() => Text(
-                  'Total Transactions: ${controller.transactions.length}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                )),
-            const SizedBox(height: 10),
-            Obx(
-              () => Text(
-                'Starting Balance: ${formatRupiah(controller.cashDrawerStart.value)}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+                  child: Column(
+                    children: [
+                      Obx(() => Text(
+                            'Total Transactions: ${controller.transactions.length}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(
+                        () => Text(
+                          'Starting Balance: ${formatRupiah(controller.cashDrawerStart.value)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Cash: ${formatRupiah(controller.transactions.fold(0, (sum, item) => item.paymentMethod == 'CASH' ? sum + item.totalPrice : sum))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Qris: ${formatRupiah(controller.transactions.fold(0, (sum, item) => item.paymentMethod == 'QRIS' ? sum + item.totalPrice : sum))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Cash Drawer: ${formatRupiah(controller.cashDrawerStart.value + controller.transactions.fold(0, (sum, item) => item.paymentMethod == 'CASH' ? sum + item.totalPrice : sum))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
-              ),
+                const SizedBox(width: 10),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Obx(() => Text(
+                            'Total Omset: ${formatRupiah(controller.transactions.fold(0, (sum, item) => sum + item.totalPrice))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Drinks: ${controller.transactions.fold(0, (sum, item) => sum + (item.type == 'DRINK' ? item.totalPrice : 0))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Foods: ${controller.transactions.fold(0, (sum, item) => sum + (item.paymentMethod == 'FOOD' ? item.totalPrice : 0))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Count Qris: ${controller.transactions.where((item) => item.paymentMethod == 'QRIS').length}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 10),
+                      Obx(() => Text(
+                            'Total Count Cash: ${controller.transactions.where((item) => item.paymentMethod == 'CASH').length}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Obx(() => Text(
-                  'Total Cash: ${formatRupiah(controller.transactions.fold(0, (sum, item) => item.paymentMethod == 'CASH' ? sum + item.totalPrice : sum))}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                )),
-            const SizedBox(height: 10),
-            Obx(() => Text(
-                  'Total Qris: ${formatRupiah(controller.transactions.fold(0, (sum, item) => item.paymentMethod == 'QRIS' ? sum + item.totalPrice : sum))}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                )),
-            const SizedBox(height: 10),
-            Obx(() => Text(
-                  'Total Cash Drawer: ${formatRupiah(controller.cashDrawerStart.value + controller.transactions.fold(0, (sum, item) => item.paymentMethod == 'CASH' ? sum + item.totalPrice : sum))}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                )),
           ],
         ),
       ),

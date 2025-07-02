@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
 
 import '../controllers/history_detail_controller.dart';
@@ -164,25 +165,45 @@ class HistoryDetailView extends GetView<HistoryDetailController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                        ),
-                        child: const Text(
-                          'Close',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.printReceipt();
+                      onPressed: () async {
+                        controller.isLoading.value = true;
+                        await controller.printKitchen(true);
+                        controller.isLoading.value = false;
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: AppColors.primary,
+                        disabledBackgroundColor: const Color(0xffBDBDBD),
                       ),
-                      child: const Text('Print',
-                          style: TextStyle(color: Colors.white)),
+                      child: const Text('Print for Kitchen',
+                          style: TextStyle(fontSize: 12, color: Colors.white)),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        controller.isLoading.value = true;
+                        await controller.printKitchen(false);
+                        controller.isLoading.value = false;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        disabledBackgroundColor: const Color(0xffBDBDBD),
+                      ),
+                      child: const Text('Print for bar',
+                          style: TextStyle(fontSize: 12, color: Colors.white)),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        controller.isLoading.value = true;
+                        await controller.printReceipt();
+                        controller.isLoading.value = false;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        disabledBackgroundColor: const Color(0xffBDBDBD),
+                      ),
+                      child: const Text('Print Copy',
+                          style: TextStyle(fontSize: 12, color: Colors.white)),
                     ),
                   ],
                 ),

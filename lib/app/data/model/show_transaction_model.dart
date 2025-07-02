@@ -19,6 +19,7 @@ class ShowTransaction {
   final int? cash;
   final int? change;
   final List<DataMenu> data;
+  final String? paymentProof;
 
   ShowTransaction({
     required this.orderNumber,
@@ -33,6 +34,7 @@ class ShowTransaction {
     required this.cash,
     required this.change,
     required this.data,
+    this.paymentProof,
   });
 
   factory ShowTransaction.fromJson(Map<String, dynamic> json) =>
@@ -50,6 +52,7 @@ class ShowTransaction {
         change: json["change"],
         data:
             List<DataMenu>.from(json["data"].map((x) => DataMenu.fromJson(x))),
+        paymentProof: json["payment_proof"],
       );
 
   Map<String, dynamic> toJson() => {

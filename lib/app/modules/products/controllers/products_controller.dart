@@ -35,6 +35,9 @@ class ProductsController extends GetxController
 
   late TabController tabController;
 
+  int _previousTabIndex = 0;
+  String? _previousTabCategoryName; // Simpan nama kategori untuk re-matching
+
   final listTab = [
     Tab(
       text: 'All',
@@ -143,7 +146,8 @@ class ProductsController extends GetxController
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text('Batal'),
+                                : const Text('Batal',
+                                    style: TextStyle(color: Colors.white)),
                           )),
                     ),
                   ],
@@ -201,27 +205,75 @@ class ProductsController extends GetxController
     });
   }
 
-  getAllData() async {
-    listMenu.value = await ProductsRepository.getProducts();
-
-    listCategories.value = await CategoriesRepository.getCategories();
-    for (var category in listCategories) {
-      final exists = listTab.any((tab) => tab.text == category.name);
-      if (!exists) {
-        listTab.add(
-          Tab(
-            text: category.name,
-            icon: Icon(IconData(
-              int.tryParse(category.icon ?? '0xe07e') ?? 0xe07e,
-              fontFamily: 'MaterialIcons',
-            )),
-          ),
-        );
+  Future<void> getAllData() async {
+    try {
+      // 1. Simpan state tab saat ini sebelum diperbarui
+      if (tabController.index < listTab.length) {
+        _previousTabIndex = tabController.index;
+        // Simpan nama kategori dari tab sebelumnya
+        _previousTabCategoryName = (listTab[_previousTabIndex].text);
+      } else {
+        _previousTabIndex = 0;
+        _previousTabCategoryName = null;
       }
-    }
 
-    tabController = TabController(length: listTab.length, vsync: this);
-    // globalState.isLoading.value = false;
+      // 2. Fetch data produk
+      listMenu.value = await ProductsRepository.getProducts();
+
+      // 3. Fetch data kategori
+      final newCategories = await CategoriesRepository.getCategories();
+
+      // 4. Perbarui listTab jika ada perubahan pada kategori
+      // Bandingkan untuk menghindari update yang tidak perlu jika kategori tidak berubah
+      final currentCategoryNames = listCategories.map((c) => c.name).toSet();
+      final newCategoryNames = newCategories.map((c) => c.name).toSet();
+
+      if (currentCategoryNames.length != newCategoryNames.length ||
+          !currentCategoryNames.containsAll(newCategoryNames)) {
+        listCategories.value = newCategories; // Perbarui data kategori
+        listTab.clear(); // Bersihkan listTab saat ini
+
+        // Tambahkan tab default (misal "Semua") jika diperlukan
+        listTab.add(Tab(text: 'All', icon: Icon(Icons.all_inclusive)));
+
+        for (var category in listCategories) {
+          listTab.add(
+            Tab(
+              text: category.name,
+              icon: Icon(IconData(
+                int.tryParse(category.icon ?? '0xe07e') ?? 0xe07e,
+                fontFamily: 'MaterialIcons',
+              )),
+            ),
+          );
+        }
+      }
+
+      // 5. Buang TabController lama dan buat yang baru
+      tabController.dispose(); // Pastikan dispose yang lama
+      tabController = TabController(length: listTab.length, vsync: this);
+
+      // 6. Coba kembalikan ke tab sebelumnya
+      if (_previousTabCategoryName != null) {
+        final newIndex =
+            listTab.indexWhere((tab) => tab.text == _previousTabCategoryName);
+        if (newIndex != -1) {
+          tabController.animateTo(newIndex);
+        } else {
+          // Jika kategori sebelumnya tidak ditemukan, kembali ke tab default
+          tabController.animateTo(0);
+        }
+      } else {
+        // Jika tidak ada tab sebelumnya, default ke indeks 0
+        tabController.animateTo(0);
+      }
+
+      // 7. Perbarui UI
+      update(); // Untuk memicu pembaruan UI di GetX
+    } catch (e) {
+      print("Error fetching and setting up data: $e");
+      // Tangani error, misal tampilkan snackbar
+    }
   }
 
   @override

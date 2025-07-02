@@ -7,18 +7,17 @@ class HistoryController extends GetxController {
   TextEditingController searchController = TextEditingController();
   final transactions = <Transaction>[].obs;
   final cashDrawerStart = 0.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchTransactions();
-  }
-
   void fetchTransactions() async {
     final data = await TransactionRepository.getTransactions();
     transactions.assignAll(data.transactions);
     print('Fetched ${data.cashDrawerStart} as cash drawer start');
     cashDrawerStart.value = data.cashDrawerStart;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchTransactions();
   }
 
   @override

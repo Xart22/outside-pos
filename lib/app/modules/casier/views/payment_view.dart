@@ -59,16 +59,17 @@ class PaymentView extends GetView<CasierController> {
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.text,
         ),
-        InputField(
-          label: "Table Number",
-          controller: controller.tableNumberController,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        ),
+        Obx(() => controller.isDineIn.value
+            ? InputField(
+                label: "Table Number",
+                controller: controller.tableNumberController,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.number,
+              )
+            : const SizedBox.shrink()),
         const SizedBox(height: 5),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text("Item",
                 style: const TextStyle(
@@ -76,13 +77,14 @@ class PaymentView extends GetView<CasierController> {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
-            const SizedBox(width: 30),
+            const SizedBox(width: 185),
             Text("Qty",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
+            const SizedBox(width: 120),
             Text("Price",
                 style: const TextStyle(
                   color: Colors.white,
@@ -150,7 +152,8 @@ class PaymentView extends GetView<CasierController> {
                               'Error', 'Customer name cannot be empty');
                           return;
                         }
-                        if (controller.tableNumberController.text.isEmpty) {
+                        if (controller.isDineIn.value &&
+                            controller.tableNumberController.text.isEmpty) {
                           showSnackbar('Error', 'Table number cannot be empty');
                           return;
                         }
@@ -192,16 +195,8 @@ class PaymentView extends GetView<CasierController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: CachedNetworkImageProvider(imageUrl(controller
-                    .listMenu
-                    .firstWhere((menu) => menu.id == cartItem.menuId)
-                    .image)),
-              ),
-              const SizedBox(width: 10),
               SizedBox(
-                width: Get.width * 0.1,
+                width: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -245,47 +240,77 @@ class PaymentView extends GetView<CasierController> {
               ),
             ],
           ),
-          SizedBox(
-            width: 40,
-            child: Obx(() => TextField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                  ),
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                  controller:
-                      TextEditingController(text: cartItem.qty.value.toString())
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  cartItem.qty.value++;
+                  controller.calculateTotalPrice();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: const CircleBorder(),
+                ),
+                child: const Icon(Icons.add, color: Colors.white, size: 16),
+              ),
+              SizedBox(
+                width: 40,
+                child: Obx(() => TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      textAlign: TextAlign.center,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      controller: TextEditingController(
+                          text: cartItem.qty.value.toString())
                         ..selection = TextSelection.fromPosition(
                           TextPosition(
                               offset: cartItem.qty.value.toString().length),
                         ),
-                  onChanged: (value) {
-                    cartItem.qty.value = int.tryParse(value) ?? 1;
-                    controller.calculateTotalPrice();
-                  },
-                )),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Obx(() => Text(
-                  '${formatRupiah(controller.calculatePriceItem(cartItem) * cartItem.qty.value)}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ))),
-              IconButton(
+                      onChanged: (value) {
+                        cartItem.qty.value = int.tryParse(value) ?? 1;
+                        controller.calculateTotalPrice();
+                      },
+                    )),
+              ),
+              ElevatedButton(
                 onPressed: () {
-                  controller.listCart.removeAt(index);
-                  controller.calculateTotalPrice();
+                  if (cartItem.qty.value > 1) {
+                    cartItem.qty.value--;
+                    controller.calculateTotalPrice();
+                  }
                 },
-                icon: const Icon(Icons.delete, color: Colors.red),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: const CircleBorder(),
+                ),
+                child: const Icon(Icons.remove, color: Colors.white, size: 16),
               ),
             ],
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Obx(() => Text(
+                    '${formatRupiah(controller.calculatePriceItem(cartItem) * cartItem.qty.value)}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ))),
+                IconButton(
+                  onPressed: () {
+                    controller.listCart.removeAt(index);
+                    controller.calculateTotalPrice();
+                  },
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/data/repository/variants_repository.dart';
+import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/Input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
@@ -53,6 +54,18 @@ class VariantFormController extends GetxController {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    clearForm();
+                    Get.back();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                  ),
+                  child: const Text('Batal',
+                      style: TextStyle(color: Colors.black)),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
                     if (optionsController.text.isNotEmpty &&
                         priceController.text.isNotEmpty &&
                         listOption.firstWhereOrNull((option) =>
@@ -79,20 +92,10 @@ class VariantFormController extends GetxController {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff1A1A1A),
+                    backgroundColor: AppColors.primary,
                   ),
-                  child: const Text('Simpan'),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    clearForm();
-                    Get.back();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff1A1A1A),
-                  ),
-                  child: const Text('Batal'),
+                  child: const Text('Simpan',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),

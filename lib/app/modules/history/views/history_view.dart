@@ -38,15 +38,23 @@ class HistoryView extends GetView<HistoryController> {
                     itemCount: controller.transactions.length,
                     itemBuilder: (context, index) {
                       final transaction = controller.transactions[index];
-                      return Card(
-                        child: ListTile(
-                            title: Text(transaction.orderId),
-                            subtitle: Text(
-                              'Total: ${formatRupiah(transaction.totalPrice)}',
-                            ),
-                            trailing: Text(transaction.createdAt
-                                .toString()
-                                .replaceAll('.000', ' '))),
+                      return GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/history-detail', arguments: {
+                            'transaction_id': transaction.id,
+                          });
+                        },
+                        child: Card(
+                          child: ListTile(
+                              title: Text(
+                                  "${transaction.orderId} - ${transaction.customerName}"),
+                              subtitle: Text(
+                                'Total: ${formatRupiah(transaction.totalPrice)}',
+                              ),
+                              trailing: Text(transaction.createdAt
+                                  .toString()
+                                  .replaceAll('.000', ' '))),
+                        ),
                       );
                     },
                   )),

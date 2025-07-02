@@ -6,6 +6,8 @@ import '../modules/casier_form/bindings/casier_form_binding.dart';
 import '../modules/casier_form/views/casier_form_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
+import '../modules/history_detail/bindings/history_detail_binding.dart';
+import '../modules/history_detail/views/history_detail_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -86,6 +88,11 @@ class AppPages {
       name: _Paths.CASIER_FORM,
       page: () => const CasierFormView(),
       binding: CasierFormBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY_DETAIL,
+      page: () => const HistoryDetailView(),
+      binding: HistoryDetailBinding(),
     ),
   ];
 }

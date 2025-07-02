@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:pos_getx/app/data/model/show_transaction_model.dart';
 import 'package:pos_getx/app/data/model/transaction_model.dart';
 import 'package:pos_getx/app/data/provider/api_provider.dart';
 
@@ -115,6 +116,24 @@ class TransactionRepository {
       print('Error fetching transactions: $e');
       print('Stack trace: $s');
       throw Exception('Error fetching transactions');
+    }
+  }
+
+  static Future<ShowTransaction> getTransactionById(
+      String transactionId) async {
+    try {
+      final response =
+          await ApiClient.get('/transactions/get-transaction/$transactionId');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ShowTransaction.fromJson(data['data']);
+      } else {
+        throw Exception('Failed to load transaction');
+      }
+    } catch (e, s) {
+      print('Error fetching transaction: $e');
+      print('Stack trace: $s');
+      throw Exception('Error fetching transaction');
     }
   }
 }

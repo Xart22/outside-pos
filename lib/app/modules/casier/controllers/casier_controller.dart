@@ -798,6 +798,13 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
       'Order Date: ${DateFormat('dd/MM/yyyy HH:mm:ss', 'id_ID').format(DateTime.now())}',
       styles: PosStyles(align: PosAlign.center),
     );
+    isDineIn.value
+        ? kitchenBytes += _buildRow('Type', 'Dine In', generator)
+        : kitchenBytes += _buildRow('Type', 'Take Away', generator);
+    if (isDineIn.value) {
+      kitchenBytes +=
+          _buildRow('Table Number', tableNumberController.text, generator);
+    }
     kitchenBytes +=
         generator.text('==========================================');
 
@@ -885,7 +892,13 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
       bytes += _buildRow('Date', dateOrder, generator);
       bytes += _buildRow('Order Number', orderNumber.value, generator);
       bytes += _buildRow('Customer', customerNameController.text, generator);
-      bytes += _buildRow('Table Number', tableNumberController.text, generator);
+      isDineIn.value
+          ? bytes += _buildRow('Type', 'Dine In', generator)
+          : bytes += _buildRow('Type', 'Take Away', generator);
+      if (isDineIn.value) {
+        bytes +=
+            _buildRow('Table Number', tableNumberController.text, generator);
+      }
       bytes += _buildRow('Cashier', 'Admin', generator);
       bytes += generator.text('==========================================');
 

@@ -11,7 +11,7 @@ class ShowTransaction {
   final String customerName;
   final String orderDate;
   final String type;
-  final int tableNumber;
+  final int? tableNumber;
   final int subTotal;
   final int discount;
   final int total;

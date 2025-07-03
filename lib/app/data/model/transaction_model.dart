@@ -38,7 +38,7 @@ class Transaction {
   final dynamic promoId;
   final String type;
   final String status;
-  final int tableNumber;
+  final int? tableNumber;
   final String customerName;
   final int? cash;
   final int? change;

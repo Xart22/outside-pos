@@ -109,15 +109,21 @@ class HistoryDetailController extends GetxController {
         kitchenBytes += generator.row([
           PosColumn(
             text: 'x${item.quantity}',
-            width: 1,
-            styles:
-                PosStyles(align: PosAlign.left, fontType: PosFontType.fontB),
+            width: 2,
+            styles: PosStyles(
+                align: PosAlign.left,
+                fontType: PosFontType.fontB,
+                height: PosTextSize.size3,
+                width: PosTextSize.size3),
           ),
           PosColumn(
             text: item.menu,
-            width: 11,
-            styles:
-                PosStyles(align: PosAlign.left, fontType: PosFontType.fontB),
+            width: 10,
+            styles: PosStyles(
+                align: PosAlign.left,
+                fontType: PosFontType.fontB,
+                height: PosTextSize.size3,
+                width: PosTextSize.size3),
           ),
         ]);
 

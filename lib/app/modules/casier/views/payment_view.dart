@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
-import 'package:pos_getx/app/utils/url_image.dart';
+
 import 'package:pos_getx/app/widgets/Input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 

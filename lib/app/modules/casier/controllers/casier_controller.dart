@@ -12,7 +12,7 @@ import 'package:pos_getx/app/data/repository/products_repository.dart';
 import 'package:pos_getx/app/data/repository/transaction_repository.dart';
 import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
-import 'package:pos_getx/app/utils/generate_wifi.dart';
+
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
 import 'package:pos_getx/app/widgets/Input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
@@ -868,13 +868,21 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
       kitchenBytes += generator.row([
         PosColumn(
           text: 'x${item.qty.value}',
-          width: 1,
-          styles: PosStyles(align: PosAlign.left, fontType: PosFontType.fontB),
+          width: 2,
+          styles: PosStyles(
+              align: PosAlign.left,
+              fontType: PosFontType.fontB,
+              height: PosTextSize.size3,
+              width: PosTextSize.size3),
         ),
         PosColumn(
           text: menu.name,
-          width: 11,
-          styles: PosStyles(align: PosAlign.left, fontType: PosFontType.fontB),
+          width: 10,
+          styles: PosStyles(
+              align: PosAlign.left,
+              fontType: PosFontType.fontB,
+              height: PosTextSize.size3,
+              width: PosTextSize.size3),
         ),
       ]);
 

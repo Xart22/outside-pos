@@ -77,14 +77,14 @@ class PaymentView extends GetView<CasierController> {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
-            const SizedBox(width: 185),
+            const SizedBox(width: 150),
             Text("Qty",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )),
-            const SizedBox(width: 120),
+            const SizedBox(width: 70),
             Text("Price",
                 style: const TextStyle(
                   color: Colors.white,
@@ -196,7 +196,7 @@ class PaymentView extends GetView<CasierController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 100,
+                width: 80,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

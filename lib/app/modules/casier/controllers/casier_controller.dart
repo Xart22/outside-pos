@@ -507,9 +507,9 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                         );
 
                         if (result) {
-                          await createHotspotUser(userWifi.value,
-                              customerNameController.text.replaceAll(' ', '_'),
-                              profile: 'customer-regular');
+                          // await createHotspotUser(userWifi.value,
+                          //     customerNameController.text.replaceAll(' ', '_'),
+                          //     profile: 'customer-regular');
                           await printReceipt(userWifi.value, dateOrder.value);
                           await getAllData();
                           globalState.isLoading.value = false;
@@ -705,9 +705,9 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           }).toList(),
                         );
                         if (result) {
-                          await createHotspotUser(userWifi.value,
-                              customerNameController.text.replaceAll(' ', '_'),
-                              profile: 'customer-regular');
+                          // await createHotspotUser(userWifi.value,
+                          //     customerNameController.text.replaceAll(' ', '_'),
+                          //     profile: 'customer-regular');
                           await printReceipt(userWifi.value, dateOrder.value);
                           await getAllData();
                           globalState.isLoading.value = false;
@@ -1001,9 +1001,7 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
       bytes += generator.text('==========================================');
       bytes += generator.text('Wifi Outside',
           styles: PosStyles(align: PosAlign.center));
-      bytes += _buildRow('Username', userWifi, generator);
-      bytes += _buildRow('Password',
-          customerNameController.text.replaceAll(' ', '_'), generator);
+      bytes += _buildRow('Password', "OutSid333", generator);
       bytes += generator.text('==========================================');
 
       // === Closing ===

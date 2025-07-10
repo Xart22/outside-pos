@@ -111,10 +111,10 @@ class HistoryDetailController extends GetxController {
             text: 'x${item.quantity}',
             width: 2,
             styles: PosStyles(
-                align: PosAlign.left,
-                fontType: PosFontType.fontB,
-                height: PosTextSize.size3,
-                width: PosTextSize.size3),
+              align: PosAlign.left,
+              fontType: PosFontType.fontB,
+              height: PosTextSize.size2,
+            ),
           ),
           PosColumn(
             text: item.menu,
@@ -122,8 +122,7 @@ class HistoryDetailController extends GetxController {
             styles: PosStyles(
                 align: PosAlign.left,
                 fontType: PosFontType.fontB,
-                height: PosTextSize.size3,
-                width: PosTextSize.size3),
+                width: PosTextSize.size2),
           ),
         ]);
 
@@ -134,7 +133,10 @@ class HistoryDetailController extends GetxController {
             PosColumn(
               text: '${variant.variantName} ${variant.name}',
               width: 11,
-              styles: PosStyles(align: PosAlign.left),
+              styles: PosStyles(
+                  align: PosAlign.left,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2),
             ),
           ]);
         }

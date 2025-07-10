@@ -872,8 +872,8 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
           styles: PosStyles(
               align: PosAlign.left,
               fontType: PosFontType.fontB,
-              height: PosTextSize.size3,
-              width: PosTextSize.size3),
+              height: PosTextSize.size2,
+              width: PosTextSize.size2),
         ),
         PosColumn(
           text: menu.name,
@@ -881,8 +881,8 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
           styles: PosStyles(
               align: PosAlign.left,
               fontType: PosFontType.fontB,
-              height: PosTextSize.size3,
-              width: PosTextSize.size3),
+              height: PosTextSize.size2,
+              width: PosTextSize.size2),
         ),
       ]);
 
@@ -898,7 +898,10 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
           PosColumn(
             text: '- ${variant.variant.name}: ${option.name}',
             width: 11,
-            styles: PosStyles(align: PosAlign.left),
+            styles: PosStyles(
+                align: PosAlign.left,
+                height: PosTextSize.size2,
+                width: PosTextSize.size2),
           ),
         ]);
       }

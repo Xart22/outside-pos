@@ -66,7 +66,8 @@ class HistoryDetailController extends GetxController {
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm58, profile);
     var kitchenBytes = <int>[];
-
+    final kitchenCategory = [2, 3, 4, 5, 6, 7, 8, 9];
+    final barCategory = [1, 10, 11, 12, 14];
     // Header
     kitchenBytes += generator.reset();
     kitchenBytes += generator.text('================================');
@@ -100,59 +101,64 @@ class HistoryDetailController extends GetxController {
     if (transaction.value.type == "DINE_IN") {
       kitchenBytes += _buildRow(
           'Table Number', transaction.value.tableNumber.toString(), generator);
-      kitchenBytes +=
-          generator.text('==========================================');
+    }
+    kitchenBytes +=
+        generator.text('==========================================');
 
-      // Menu Items
-      for (var item in transaction.value.data) {
-        // Baris utama (qty + nama menu)
-        kitchenBytes += generator.row([
-          PosColumn(
-            text: 'x${item.quantity}',
-            width: 2,
-            styles: PosStyles(
+    // Menu Items
+    for (var item in transaction.value.data) {
+      if (kitchen && !kitchenCategory.contains(item.categoryId)) continue;
+      if (!kitchen && !barCategory.contains(item.categoryId)) continue;
+      // Baris utama (qty + nama menu)
+      kitchenBytes += generator.row([
+        PosColumn(
+          text: 'x${item.quantity}',
+          width: 2,
+          styles: PosStyles(
+            align: PosAlign.left,
+            fontType: PosFontType.fontB,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ),
+        ),
+        PosColumn(
+          text: item.menu,
+          width: 10,
+          styles: PosStyles(
               align: PosAlign.left,
               fontType: PosFontType.fontB,
-              height: PosTextSize.size2,
-            ),
-          ),
+              width: PosTextSize.size2,
+              height: PosTextSize.size2),
+        ),
+      ]);
+
+      // Baris tambahan untuk tiap opsi
+      for (var variant in item.variants) {
+        kitchenBytes += generator.row([
+          PosColumn(text: '', width: 1), // kosong untuk indentasi
           PosColumn(
-            text: item.menu,
-            width: 10,
+            text: '${variant.variantName} ${variant.name}',
+            width: 11,
             styles: PosStyles(
                 align: PosAlign.left,
-                fontType: PosFontType.fontB,
-                width: PosTextSize.size2),
+                height: PosTextSize.size2,
+                width: PosTextSize.size1),
           ),
         ]);
-
-        // Baris tambahan untuk tiap opsi
-        for (var variant in item.variants) {
-          kitchenBytes += generator.row([
-            PosColumn(text: '', width: 1), // kosong untuk indentasi
-            PosColumn(
-              text: '${variant.variantName} ${variant.name}',
-              width: 11,
-              styles: PosStyles(
-                  align: PosAlign.left,
-                  height: PosTextSize.size2,
-                  width: PosTextSize.size2),
-            ),
-          ]);
-        }
-
-        // Spasi antar item
-        kitchenBytes += generator.feed(1);
       }
 
-      // Footer
-      kitchenBytes +=
-          generator.text('==========================================');
-      kitchenBytes += generator.feed(3);
-
-      // Kirim ke printer
-      await _safePrint(macPrinterCasier, kitchenBytes);
+      // Spasi antar item
+      kitchenBytes += generator.feed(1);
     }
+
+    // Footer
+    kitchenBytes +=
+        generator.text('==========================================');
+    kitchenBytes += generator.feed(3);
+
+    // Kirim ke printer
+
+    await _safePrint(macPrinterCasier, kitchenBytes);
   }
 
   Future<void> printReceipt({bool isCopy = false}) async {

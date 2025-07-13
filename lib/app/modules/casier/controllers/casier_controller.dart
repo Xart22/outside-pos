@@ -31,6 +31,8 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
   TextEditingController referenceCodeController = TextEditingController();
   TextEditingController issueController = TextEditingController();
   TextEditingController discountController = TextEditingController();
+  final kitchenCategory = [2, 3, 4, 5, 6, 7, 8, 9];
+  final barCategory = [1, 10, 11, 12, 14];
 
   final orderNumber = ''.obs;
   final paymentMethod = ''.obs;
@@ -863,7 +865,9 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
     // Menu Items
     for (var item in listCart) {
       final menu = listMenu.firstWhere((m) => m.id == item.menuId);
-
+      // Cek kategori untuk menentukan apakah ini kitchen atau bar
+      if (kitchen && !kitchenCategory.contains(menu.category.id)) continue;
+      if (!kitchen && !barCategory.contains(menu.category.id)) continue;
       // Baris utama (qty + nama menu)
       kitchenBytes += generator.row([
         PosColumn(
@@ -881,8 +885,8 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
           styles: PosStyles(
               align: PosAlign.left,
               fontType: PosFontType.fontB,
-              height: PosTextSize.size2,
-              width: PosTextSize.size2),
+              width: PosTextSize.size2,
+              height: PosTextSize.size2),
         ),
       ]);
 
@@ -901,7 +905,7 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
             styles: PosStyles(
                 align: PosAlign.left,
                 height: PosTextSize.size2,
-                width: PosTextSize.size2),
+                width: PosTextSize.size1),
           ),
         ]);
       }

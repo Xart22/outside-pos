@@ -71,6 +71,7 @@ class ShowTransaction {
 
 class DataMenu {
   final String menu;
+  final int categoryId;
   final int quantity;
   final int basePrice;
   final int variantPrice;
@@ -79,6 +80,7 @@ class DataMenu {
 
   DataMenu({
     required this.menu,
+    required this.categoryId,
     required this.quantity,
     required this.basePrice,
     required this.variantPrice,
@@ -88,6 +90,7 @@ class DataMenu {
 
   factory DataMenu.fromJson(Map<String, dynamic> json) => DataMenu(
         menu: json["menu"],
+        categoryId: json["category"],
         quantity: json["quantity"],
         basePrice: json["base_price"],
         variantPrice: json["variant_price"],

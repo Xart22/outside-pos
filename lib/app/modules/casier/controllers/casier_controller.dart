@@ -31,8 +31,8 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
   TextEditingController referenceCodeController = TextEditingController();
   TextEditingController issueController = TextEditingController();
   TextEditingController discountController = TextEditingController();
-  final kitchenCategory = [2, 3, 4, 5, 6, 7, 8, 9];
-  final barCategory = [1, 10, 11, 12, 14];
+  final kitchenCategory = [2, 3, 4, 5, 6, 7, 8, 9, 18];
+  final barCategory = [1, 10, 11, 12, 14, 16, 17];
 
   final orderNumber = ''.obs;
   final paymentMethod = ''.obs;
@@ -52,7 +52,7 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
   final listCart = <CartItem>[].obs;
 
   final randomUserWifi = ''.obs;
-  final macPrinterCasier = '66:32:F9:51:03:BF';
+  final macPrinterCasier = '66:32:A7:E6:BD:A5';
 
   final userWifi = ''.obs;
   final passwordWifi = ''.obs;

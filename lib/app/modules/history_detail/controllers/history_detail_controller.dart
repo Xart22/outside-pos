@@ -21,7 +21,7 @@ class HistoryDetailController extends GetxController {
       cash: null,
       change: null,
       data: []).obs;
-  final macPrinterCasier = '66:32:F9:51:03:BF';
+  final macPrinterCasier = '66:32:A7:E6:BD:A5';
 
   final isLoading = false.obs;
 
@@ -66,8 +66,8 @@ class HistoryDetailController extends GetxController {
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm58, profile);
     var kitchenBytes = <int>[];
-    final kitchenCategory = [2, 3, 4, 5, 6, 7, 8, 9];
-    final barCategory = [1, 10, 11, 12, 14];
+    final kitchenCategory = [2, 3, 4, 5, 6, 7, 8, 9, 18];
+    final barCategory = [1, 10, 11, 12, 14, 16, 17];
     // Header
     kitchenBytes += generator.reset();
     kitchenBytes += generator.text('================================');

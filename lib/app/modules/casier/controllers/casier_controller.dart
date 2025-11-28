@@ -508,7 +508,7 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           }).toList(),
                         );
 
-                        if (result) {
+                        if (result && totalPrice.value > 0) {
                           // await createHotspotUser(userWifi.value,
                           //     customerNameController.text.replaceAll(' ', '_'),
                           //     profile: 'customer-regular');

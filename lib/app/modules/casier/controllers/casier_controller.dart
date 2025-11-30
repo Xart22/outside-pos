@@ -348,6 +348,11 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
+                  onChanged: (value) {
+                    final perc = double.tryParse(value) ?? 0.0;
+                    discount.value = perc / 100;
+                    calculateTotalPrice();
+                  },
                 ),
                 SizedBox(height: 8),
                 Row(
@@ -508,15 +513,13 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           }).toList(),
                         );
 
-                        if (result && totalPrice.value > 0) {
-                          // await createHotspotUser(userWifi.value,
-                          //     customerNameController.text.replaceAll(' ', '_'),
-                          //     profile: 'customer-regular');
-                          await printReceipt(userWifi.value, dateOrder.value);
+                        if (result) {
                           await getAllData();
-                          globalState.isLoading.value = false;
-                          showSnackbar('Success', 'Payment successful');
+                          if (totalPrice.value != 0) {
+                            await printReceipt(userWifi.value, dateOrder.value);
+                          }
                           dialogPrint();
+                          globalState.isLoading.value = false;
                         } else {
                           globalState.isLoading.value = false;
                           showSnackbar('Error', 'Payment failed');
@@ -707,14 +710,12 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           }).toList(),
                         );
                         if (result) {
-                          // await createHotspotUser(userWifi.value,
-                          //     customerNameController.text.replaceAll(' ', '_'),
-                          //     profile: 'customer-regular');
-                          await printReceipt(userWifi.value, dateOrder.value);
                           await getAllData();
-                          globalState.isLoading.value = false;
-                          showSnackbar('Success', 'Payment successful');
+                          if (totalPrice.value != 0) {
+                            await printReceipt(userWifi.value, dateOrder.value);
+                          }
                           dialogPrint();
+                          globalState.isLoading.value = false;
                         } else {
                           globalState.isLoading.value = false;
                           showSnackbar('Error', 'Payment failed');

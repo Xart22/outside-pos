@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
 
-const baseUrl = 'https://outsidecoffee.id/api';
-// const baseUrl = 'http://192.168.1.8/pos/public/api';
+// const baseUrl = 'https://team.outsidecoffee.id/api';
+const baseUrl = 'http://192.168.1.4/outside-pos/public/api';
 
 class ApiClient {
   static final http.Client httpClient = http.Client();

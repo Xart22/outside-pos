@@ -9,7 +9,7 @@ import 'package:pos_getx/app/modules/settings/controllers/settings_controller.da
 import 'package:pos_getx/app/modules/variants/controllers/variants_controller.dart';
 import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class HomeController extends GetxController {
@@ -78,34 +78,70 @@ class HomeController extends GetxController {
             SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: () async {
-                    if (startingBalanceController.text.isEmpty) {
-                      showSnackbar("Error", "Starting balance cannot be empty");
-                      return;
-                    }
-                    globalState.isLoading.value = true;
-                    final result =
-                        await TransactionRepository.updatetOpenCashDrawer(
-                      startingBalanceController.text.replaceAll('Rp', ''),
-                    );
-                    globalState.isLoading.value = false;
-                    if (result) {
-                      Get.back();
-                      showSnackbar("Success", "Starting balance has been set");
-                      casierController.orderNumber.value =
-                          await TransactionRepository.getOrderNumber();
-                    } else {
-                      showSnackbar("Error", "Failed to set starting balance");
-                    }
-                  },
-                  child: const Text(
-                    "Submit",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+              child: Obx(() => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffEF6C00),
+                      disabledBackgroundColor: const Color(0xff8A8A8A),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: globalState.isLoading.value
+                        ? null
+                        : () async {
+                            if (startingBalanceController.text.isEmpty) {
+                              showSnackbar(
+                                  "Error", "Starting balance cannot be empty");
+                              return;
+                            }
+
+                            final balance = startingBalanceController.text
+                                .replaceAll(RegExp(r'[^0-9]'), '');
+                            if (balance.isEmpty) {
+                              showSnackbar(
+                                  "Error", "Starting balance tidak valid");
+                              return;
+                            }
+
+                            globalState.isLoading.value = true;
+                            try {
+                              final result = await TransactionRepository
+                                  .updatetOpenCashDrawer(
+                                balance,
+                              );
+
+                              if (result) {
+                                Get.back();
+                                showSnackbar(
+                                    "Success", "Starting balance has been set");
+                                casierController.orderNumber.value =
+                                    await TransactionRepository
+                                        .getOrderNumber();
+                              } else {
+                                showSnackbar(
+                                    "Error", "Failed to set starting balance");
+                              }
+                            } catch (_) {
+                              showSnackbar(
+                                  "Error", "Failed to set starting balance");
+                            } finally {
+                              globalState.isLoading.value = false;
+                            }
+                          },
+                    child: globalState.isLoading.value
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            "Submit",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
                   )),
             ),
           ],

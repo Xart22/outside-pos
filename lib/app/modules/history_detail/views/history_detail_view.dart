@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
+import 'package:pos_getx/app/widgets/loading.dart';
 
 import '../controllers/history_detail_controller.dart';
 
@@ -30,25 +31,20 @@ class HistoryDetailView extends GetView<HistoryDetailController> {
             ),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Obx(() {
-                      final transaction = controller.transaction.value;
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff121212),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        width: Get.width * 0.4,
-                        child: Table(
-                          columnWidths: const {
-                            0: FlexColumnWidth(1.5), // Label
-                            1: FlexColumnWidth(0.2), // Separator ":"
-                            2: FlexColumnWidth(4), // Value
-                          },
+                LayoutBuilder(builder: (context, constraints) {
+                  final isCompact = constraints.maxWidth < 900;
+                  final cardWidth = isCompact
+                      ? constraints.maxWidth
+                      : (constraints.maxWidth / 2) - 10;
+
+                  return Wrap(
+                    spacing: 20,
+                    runSpacing: 12,
+                    children: [
+                      Obx(() {
+                        final transaction = controller.transaction.value;
+                        return _summaryCard(
+                          width: cardWidth,
                           children: [
                             _buildRow('Order Number', transaction.orderNumber),
                             _buildRow(
@@ -63,25 +59,12 @@ class HistoryDetailView extends GetView<HistoryDetailController> {
                                 'Discount', formatRupiah(transaction.discount)),
                             _buildRow('Total', formatRupiah(transaction.total)),
                           ],
-                        ),
-                      );
-                    }),
-                    Obx(() {
-                      final transaction = controller.transaction.value;
-                      return Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff121212),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white),
-                        ),
-                        width: Get.width * 0.4,
-                        child: Table(
-                          columnWidths: const {
-                            0: FlexColumnWidth(1.5), // Label
-                            1: FlexColumnWidth(0.2), // Separator ":"
-                            2: FlexColumnWidth(4), // Value
-                          },
+                        );
+                      }),
+                      Obx(() {
+                        final transaction = controller.transaction.value;
+                        return _summaryCard(
+                          width: cardWidth,
                           children: [
                             _buildRow(
                                 'Payment Method', transaction.paymentMethod),
@@ -97,11 +80,11 @@ class HistoryDetailView extends GetView<HistoryDetailController> {
                                     ? formatRupiah(transaction.change!)
                                     : 'N/A'),
                           ],
-                        ),
-                      );
-                    }),
-                  ],
-                ),
+                        );
+                      }),
+                    ],
+                  );
+                }),
                 const SizedBox(height: 20),
                 const Text(
                   'Order Items',
@@ -161,59 +144,80 @@ class HistoryDetailView extends GetView<HistoryDetailController> {
                   }),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        controller.isLoading.value = true;
-                        await controller.printKitchen(true);
-                        controller.isLoading.value = false;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: const Color(0xffBDBDBD),
-                      ),
-                      child: const Text('Print for Kitchen',
-                          style: TextStyle(fontSize: 12, color: Colors.white)),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        controller.isLoading.value = true;
-                        await controller.printKitchen(false);
-                        controller.isLoading.value = false;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: const Color(0xffBDBDBD),
-                      ),
-                      child: const Text('Print for bar',
-                          style: TextStyle(fontSize: 12, color: Colors.white)),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        controller.isLoading.value = true;
-                        await controller.printReceipt();
-                        controller.isLoading.value = false;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: const Color(0xffBDBDBD),
-                      ),
-                      child: const Text('Print Copy',
-                          style: TextStyle(fontSize: 12, color: Colors.white)),
-                    ),
-                  ],
-                ),
+                Obx(() => Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        ElevatedButton(
+                          onPressed: controller.isLoading.value
+                              ? null
+                              : () async {
+                                  await controller.runWithLoading(
+                                      () => controller.printKitchen(true));
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            disabledBackgroundColor: const Color(0xffBDBDBD),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text('Print Kitchen',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white)),
+                        ),
+                        ElevatedButton(
+                          onPressed: controller.isLoading.value
+                              ? null
+                              : () async {
+                                  await controller.runWithLoading(
+                                      () => controller.printKitchen(false));
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            disabledBackgroundColor: const Color(0xffBDBDBD),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text('Print Bar',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white)),
+                        ),
+                        ElevatedButton(
+                          onPressed: controller.isLoading.value
+                              ? null
+                              : () async {
+                                  await controller
+                                      .runWithLoading(controller.printReceipt);
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            disabledBackgroundColor: const Color(0xffBDBDBD),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text('Print Copy',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white)),
+                        ),
+                      ],
+                    )),
               ],
             ),
           ),
           Obx(() => controller.isLoading.value
               ? const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
+                  child: Loading(
+                    size: 42,
+                    label: 'Sedang mencetak...',
                   ),
                 )
               : const SizedBox.shrink()),
@@ -229,4 +233,24 @@ TableRow _buildRow(String label, String value) {
     const Text(":", style: TextStyle(color: Colors.white)),
     Text(value, style: const TextStyle(color: Colors.white)),
   ]);
+}
+
+Widget _summaryCard({required double width, required List<TableRow> children}) {
+  return Container(
+    width: width,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: const Color(0xff161616),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: const Color(0xff2C2C2C)),
+    ),
+    child: Table(
+      columnWidths: const {
+        0: FlexColumnWidth(1.5),
+        1: FlexColumnWidth(0.2),
+        2: FlexColumnWidth(4),
+      },
+      children: children,
+    ),
+  );
 }

@@ -35,9 +35,16 @@ class SettingsView extends GetView<SettingsController> {
                   padding: const EdgeInsets.all(20),
                   margin: const EdgeInsets.all(15),
                   height: MediaQuery.of(context).size.height,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Color(0xff1A1A1A),
                     borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x33000000),
+                        blurRadius: 14,
+                        offset: Offset(0, 6),
+                      )
+                    ],
                   ),
                   child: _sideMenu(),
                 ),

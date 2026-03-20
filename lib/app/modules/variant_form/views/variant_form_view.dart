@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 import 'package:pos_getx/app/widgets/loading.dart';
 
 import '../controllers/variant_form_controller.dart';
@@ -23,9 +23,9 @@ class VariantFormView extends GetView<VariantFormController> {
           Obx(() => controller.formChange.value
               ? IconButton(
                   icon: const Icon(Icons.save, color: Colors.white),
-                  onPressed: () {
-                    controller.saveVariant();
-                  },
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : controller.saveVariant,
                 )
               : const SizedBox.shrink()),
         ],
@@ -69,7 +69,7 @@ class VariantFormView extends GetView<VariantFormController> {
                     'Apa variant ini wajib dipilih?',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -105,7 +105,7 @@ class VariantFormView extends GetView<VariantFormController> {
                     'Ada batasan jumlah pilihan variant?',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -229,16 +229,32 @@ class VariantFormView extends GetView<VariantFormController> {
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          controller.saveVariant();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                        ),
-                        child: const Text(
-                          'Simpan Variant',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                    child: Obx(() => ElevatedButton(
+                          onPressed: controller.isLoading.value
+                              ? null
+                              : controller.saveVariant,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            disabledBackgroundColor: const Color(0xff8A8A8A),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: controller.isLoading.value
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  'Simpan Variant',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
                         )),
                   ),
                   const SizedBox(height: 20),
@@ -248,9 +264,12 @@ class VariantFormView extends GetView<VariantFormController> {
             Obx(
               () => controller.isLoading.value
                   ? Container(
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: Colors.black.withValues(alpha: 0.35),
                       child: const Center(
-                        child: Loading(size: 50),
+                        child: Loading(
+                          size: 50,
+                          label: 'Menyimpan variant...',
+                        ),
                       ),
                     )
                   : const SizedBox.shrink(),

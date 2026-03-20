@@ -28,7 +28,7 @@ class ProductsRepository {
       bool isOnline = false,
       bool isActive = true,
       required List<Variant> variant}) async {
-    var imageLocal = "";
+    var imageLocal = "null";
 
     if (imageFile != null) {
       final String path = await getApplicationDocumentsDirectory()
@@ -58,6 +58,7 @@ class ProductsRepository {
 
     return ApiClient.upload('/menu/store', requestBody, imageFile!.path)
         .then((response) {
+      print('Response: ${response.body}');
       if (response.statusCode == 200) {
         return true;
       } else if (response.statusCode == 400) {

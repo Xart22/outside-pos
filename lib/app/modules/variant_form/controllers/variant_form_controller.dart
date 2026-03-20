@@ -4,7 +4,7 @@ import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/data/repository/variants_repository.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class VariantFormController extends GetxController {
@@ -112,7 +112,9 @@ class VariantFormController extends GetxController {
     priceController.clear();
   }
 
-  void saveVariant() {
+  Future<void> saveVariant() async {
+    if (isLoading.value) return;
+
     if (nameController.text.isEmpty) {
       errorMessage.value = "Nama variant tidak boleh kosong";
       return;
@@ -130,34 +132,21 @@ class VariantFormController extends GetxController {
     );
 
     isLoading.value = true;
-    if (editMode.value) {
-      final result = VariantsRepository.updateVariant(variant);
-      result.then((success) {
-        isLoading.value = false;
-        if (success) {
-          Get.back(result: true);
-          showSnackbar("Sukses", "Variant berhasil disimpan");
-        } else {
-          showSnackbar("Error", "Gagal menyimpan variant");
-        }
-      }).catchError((error) {
-        isLoading.value = false;
-        showSnackbar("Error", error.toString());
-      });
-    } else {
-      final result = VariantsRepository.createVariant(variant);
-      result.then((success) {
-        isLoading.value = false;
-        if (success) {
-          Get.back(result: true);
-          showSnackbar("Sukses", "Variant berhasil disimpan");
-        } else {
-          showSnackbar("Error", "Gagal menyimpan variant");
-        }
-      }).catchError((error) {
-        isLoading.value = false;
-        showSnackbar("Error", error.toString());
-      });
+    try {
+      final success = editMode.value
+          ? await VariantsRepository.updateVariant(variant)
+          : await VariantsRepository.createVariant(variant);
+
+      if (success) {
+        Get.back(result: true);
+        showSnackbar("Sukses", "Variant berhasil disimpan");
+      } else {
+        showSnackbar("Error", "Gagal menyimpan variant");
+      }
+    } catch (error) {
+      showSnackbar("Error", error.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 

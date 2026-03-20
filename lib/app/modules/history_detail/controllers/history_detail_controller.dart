@@ -27,15 +27,28 @@ class HistoryDetailController extends GetxController {
 
   void fetchTransactionDetails() async {
     isLoading.value = true;
-    if (Get.arguments == null || Get.arguments['transaction_id'] == null) {
-      print("🛑 No transaction ID provided in arguments.");
-      return;
+    try {
+      if (Get.arguments == null || Get.arguments['transaction_id'] == null) {
+        print("🛑 No transaction ID provided in arguments.");
+        return;
+      }
+      final data = await TransactionRepository.getTransactionById(
+          Get.arguments['transaction_id'].toString());
+      transaction.value = data;
+    } finally {
+      isLoading.value = false;
     }
-    final data = await TransactionRepository.getTransactionById(
-        Get.arguments['transaction_id'].toString());
-    transaction.value = data;
+  }
 
-    isLoading.value = false;
+  Future<void> runWithLoading(Future<void> Function() action) async {
+    if (isLoading.value) return;
+
+    isLoading.value = true;
+    try {
+      await action();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> _safePrint(String macAddress, List<int> bytes) async {

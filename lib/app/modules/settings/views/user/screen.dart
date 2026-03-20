@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_getx/app/modules/settings/controllers/settings_controller.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 
 class ManageUserView extends GetView<SettingsController> {
   const ManageUserView({super.key});

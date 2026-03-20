@@ -128,49 +128,59 @@ class MenuFormController extends GetxController {
     return true;
   }
 
-  void createOrUpdateMenu() async {
-    globalState.isLoading.value = true;
+  Future<void> createOrUpdateMenu() async {
+    if (globalState.isLoading.value) return;
     if (!await validateForm()) return;
 
-    if (editMode.value) {
-      final result = await ProductsRepository.updateProduct(
-        id: menu.value!.id,
-        name: nameController.text,
-        price: priceController.text,
-        description: descriptionController.text,
-        categoryId: categorySelected.value,
-        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
-        isOnline: isOnline.value,
-        isActive: isActive.value,
-        stock: stockController.text.isEmpty ? '0' : stockController.text,
-        variant: listSelectedVariant,
-      );
-      globalState.isLoading.value = false;
+    globalState.isLoading.value = true;
+    try {
+      final result = editMode.value
+          ? await ProductsRepository.updateProduct(
+              id: menu.value!.id,
+              name: nameController.text,
+              price: priceController.text,
+              description: descriptionController.text,
+              categoryId: categorySelected.value,
+              imageFile:
+                  imageFile.value != null ? File(imageFile.value!.path) : null,
+              isOnline: isOnline.value,
+              isActive: isActive.value,
+              stock: stockController.text.isEmpty ? '0' : stockController.text,
+              variant: listSelectedVariant,
+            )
+          : await ProductsRepository.createProduct(
+              name: nameController.text,
+              price: priceController.text,
+              description: descriptionController.text,
+              categoryId: categorySelected.value,
+              imageFile:
+                  imageFile.value != null ? File(imageFile.value!.path) : null,
+              isOnline: isOnline.value,
+              isActive: isActive.value,
+              stock: stockController.text.isEmpty ? '0' : stockController.text,
+              variant: listSelectedVariant,
+            );
+
       if (result) {
         Get.back();
-        showSnackbar("Success", "Produk berhasil diperbarui");
+        showSnackbar(
+          "Success",
+          editMode.value
+              ? "Produk berhasil diperbarui"
+              : "Produk berhasil ditambahkan",
+        );
       } else {
-        showSnackbar("Error", "Gagal memperbarui produk");
+        showSnackbar(
+          "Error",
+          editMode.value
+              ? "Gagal memperbarui produk"
+              : "Gagal menambahkan produk",
+        );
       }
-    } else {
-      final result = await ProductsRepository.createProduct(
-        name: nameController.text,
-        price: priceController.text,
-        description: descriptionController.text,
-        categoryId: categorySelected.value,
-        imageFile: imageFile.value != null ? File(imageFile.value!.path) : null,
-        isOnline: isOnline.value,
-        isActive: isActive.value,
-        stock: stockController.text.isEmpty ? '0' : stockController.text,
-        variant: listSelectedVariant,
-      );
+    } catch (_) {
+      showSnackbar("Error", "Terjadi kesalahan saat menyimpan produk");
+    } finally {
       globalState.isLoading.value = false;
-      if (result) {
-        Get.back();
-        showSnackbar("Success", "Produk berhasil ditambahkan");
-      } else {
-        showSnackbar("Error", "Gagal menambahkan produk");
-      }
     }
   }
 

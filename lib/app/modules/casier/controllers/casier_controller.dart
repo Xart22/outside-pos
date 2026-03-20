@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,7 +16,7 @@ import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
 
 import 'package:pos_getx/app/utils/rupiah_formater.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
@@ -304,7 +306,9 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           color: Colors.white),
                     )),
                 SizedBox(height: 16),
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
                     ElevatedButton(
                         onPressed: () {
@@ -358,34 +362,38 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        paymentMethod.value = 'cash';
-                        payWithCash();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: const Color(0xffBDBDBD),
-                      ),
-                      child: const Text(
-                        'Cash',
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        paymentMethod.value = 'qris';
-                        payWithQris();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.buttonLight,
-                        disabledBackgroundColor: const Color(0xffBDBDBD),
-                      ),
-                      child: const Text(
-                        'QRIS',
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      ),
-                    )
+                    Obx(() => ElevatedButton(
+                          onPressed: globalState.isLoading.value
+                              ? null
+                              : () {
+                                  paymentMethod.value = 'cash';
+                                  payWithCash();
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            disabledBackgroundColor: const Color(0xffBDBDBD),
+                          ),
+                          child: const Text(
+                            'Cash',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        )),
+                    Obx(() => ElevatedButton(
+                          onPressed: globalState.isLoading.value
+                              ? null
+                              : () {
+                                  paymentMethod.value = 'qris';
+                                  payWithQris();
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.buttonLight,
+                            disabledBackgroundColor: const Color(0xffBDBDBD),
+                          ),
+                          child: const Text(
+                            'QRIS',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        ))
                   ],
                 ),
                 SizedBox(height: 8),
@@ -414,6 +422,17 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Future<void> _runWithGlobalLoading(Future<void> Function() action) async {
+    if (globalState.isLoading.value) return;
+
+    globalState.isLoading.value = true;
+    try {
+      await action();
+    } finally {
+      globalState.isLoading.value = false;
+    }
   }
 
   void payWithQris() {
@@ -485,45 +504,44 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           showSnackbar('Error', 'APPR CODE cannot be empty');
                           return;
                         }
-                        globalState.isLoading.value = true;
+                        await _runWithGlobalLoading(() async {
+                          final result =
+                              await TransactionRepository.processTransaction(
+                            transactionId: orderNumber.value,
+                            type: isDineIn.value ? 'DINE_IN' : 'TAKE_AWAY',
+                            customerName: customerNameController.text,
+                            paymentMethod: paymentMethod.value,
+                            subtotal: subTotal.value.toString(),
+                            total: totalPrice.value.toString(),
+                            discount: totalDiscount.value.toString(),
+                            paymentProof:
+                                "${referenceCodeController.text} - ${issueController.text}",
+                            tableNumber: tableNumberController.text,
+                            items: listCart.map((item) {
+                              return {
+                                'menu_id': item.menuId,
+                                'quantity': item.qty.value,
+                                'options': item.options.entries.map((e) {
+                                  return {
+                                    'variant_id': e.key,
+                                    'variant_option_id': e.value,
+                                  };
+                                }).toList(),
+                              };
+                            }).toList(),
+                          );
 
-                        final result =
-                            await TransactionRepository.processTransaction(
-                          transactionId: orderNumber.value,
-                          type: isDineIn.value ? 'DINE_IN' : 'TAKE_AWAY',
-                          customerName: customerNameController.text,
-                          paymentMethod: paymentMethod.value,
-                          subtotal: subTotal.value.toString(),
-                          total: totalPrice.value.toString(),
-                          discount: totalDiscount.value.toString(),
-                          paymentProof:
-                              "${referenceCodeController.text} - ${issueController.text}",
-                          tableNumber: tableNumberController.text,
-                          items: listCart.map((item) {
-                            return {
-                              'menu_id': item.menuId,
-                              'quantity': item.qty.value,
-                              'options': item.options.entries.map((e) {
-                                return {
-                                  'variant_id': e.key,
-                                  'variant_option_id': e.value,
-                                };
-                              }).toList(),
-                            };
-                          }).toList(),
-                        );
-
-                        if (result) {
-                          await getAllData();
-                          if (totalPrice.value != 0) {
-                            await printReceipt(userWifi.value, dateOrder.value);
+                          if (result) {
+                            await getAllData();
+                            if (totalPrice.value != 0) {
+                              await printReceipt(
+                                  userWifi.value, dateOrder.value);
+                            }
+                            dialogPrint();
+                          } else {
+                            showSnackbar('Error', 'Payment failed');
                           }
-                          dialogPrint();
-                          globalState.isLoading.value = false;
-                        } else {
-                          globalState.isLoading.value = false;
-                          showSnackbar('Error', 'Payment failed');
-                        }
+                        });
                       },
                       child: const Text('Settle',
                           style: TextStyle(fontSize: 12, color: Colors.white))),
@@ -679,47 +697,46 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
                           showSnackbar('Error', 'Insufficient cash amount');
                           return;
                         }
-                        globalState.isLoading.value = true;
-
-                        final result =
-                            await TransactionRepository.processTransaction(
-                          transactionId: orderNumber.value,
-                          type: isDineIn.value ? 'DINE_IN' : 'TAKE_AWAY',
-                          customerName: customerNameController.text,
-                          subtotal: subTotal.value.toString(),
-                          paymentMethod: paymentMethod.value,
-                          cash:
-                              cashAmountController.text.replaceAll('Rp. ', ''),
-                          total: totalPrice.value.toString(),
-                          change: changeAmount.value.toString(),
-                          discount: totalDiscount.value.toString(),
-                          paymentProof:
-                              "${referenceCodeController.text} - ${issueController.text}",
-                          tableNumber: tableNumberController.text,
-                          items: listCart.map((item) {
-                            return {
-                              'menu_id': item.menuId,
-                              'quantity': item.qty.value,
-                              'options': item.options.entries.map((e) {
-                                return {
-                                  'variant_id': e.key,
-                                  'variant_option_id': e.value,
-                                };
-                              }).toList(),
-                            };
-                          }).toList(),
-                        );
-                        if (result) {
-                          await getAllData();
-                          if (totalPrice.value != 0) {
-                            await printReceipt(userWifi.value, dateOrder.value);
+                        await _runWithGlobalLoading(() async {
+                          final result =
+                              await TransactionRepository.processTransaction(
+                            transactionId: orderNumber.value,
+                            type: isDineIn.value ? 'DINE_IN' : 'TAKE_AWAY',
+                            customerName: customerNameController.text,
+                            subtotal: subTotal.value.toString(),
+                            paymentMethod: paymentMethod.value,
+                            cash: cashAmountController.text
+                                .replaceAll('Rp. ', ''),
+                            total: totalPrice.value.toString(),
+                            change: changeAmount.value.toString(),
+                            discount: totalDiscount.value.toString(),
+                            paymentProof:
+                                "${referenceCodeController.text} - ${issueController.text}",
+                            tableNumber: tableNumberController.text,
+                            items: listCart.map((item) {
+                              return {
+                                'menu_id': item.menuId,
+                                'quantity': item.qty.value,
+                                'options': item.options.entries.map((e) {
+                                  return {
+                                    'variant_id': e.key,
+                                    'variant_option_id': e.value,
+                                  };
+                                }).toList(),
+                              };
+                            }).toList(),
+                          );
+                          if (result) {
+                            await getAllData();
+                            if (totalPrice.value != 0) {
+                              await printReceipt(
+                                  userWifi.value, dateOrder.value);
+                            }
+                            dialogPrint();
+                          } else {
+                            showSnackbar('Error', 'Payment failed');
                           }
-                          dialogPrint();
-                          globalState.isLoading.value = false;
-                        } else {
-                          globalState.isLoading.value = false;
-                          showSnackbar('Error', 'Payment failed');
-                        }
+                        });
                       },
                       child: const Text('Pay',
                           style: TextStyle(fontSize: 12, color: Colors.white))),
@@ -737,53 +754,55 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
       barrierDismissible: false,
       AlertDialog(
         backgroundColor: const Color(0xff121212),
-        content:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          ElevatedButton(
-            onPressed: () async {
-              globalState.isLoading.value = true;
-              await printKitchen(true);
-              globalState.isLoading.value = false;
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              disabledBackgroundColor: const Color(0xffBDBDBD),
-            ),
-            child: const Text('Print for Kitchen',
-                style: TextStyle(fontSize: 12, color: Colors.white)),
-          ),
-          const SizedBox(width: 10),
-          ElevatedButton(
-            onPressed: () async {
-              globalState.isLoading.value = true;
-              await printKitchen(false);
-              globalState.isLoading.value = false;
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              disabledBackgroundColor: const Color(0xffBDBDBD),
-            ),
-            child: const Text('Print for bar',
-                style: TextStyle(fontSize: 12, color: Colors.white)),
-          ),
-          const SizedBox(width: 10),
-          ElevatedButton(
-            onPressed: () async {
-              globalState.isLoading.value = true;
-              await printReceipt(
-                userWifi.value,
-                dateOrder.value,
-              );
-              globalState.isLoading.value = false;
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              disabledBackgroundColor: const Color(0xffBDBDBD),
-            ),
-            child: const Text('Print Copy',
-                style: TextStyle(fontSize: 12, color: Colors.white)),
-          ),
-        ]),
+        content: Obx(() => Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                ElevatedButton(
+                  onPressed: globalState.isLoading.value
+                      ? null
+                      : () async {
+                          await _runWithGlobalLoading(() => printKitchen(true));
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    disabledBackgroundColor: const Color(0xffBDBDBD),
+                  ),
+                  child: const Text('Print Kitchen',
+                      style: TextStyle(fontSize: 12, color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: globalState.isLoading.value
+                      ? null
+                      : () async {
+                          await _runWithGlobalLoading(
+                              () => printKitchen(false));
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    disabledBackgroundColor: const Color(0xffBDBDBD),
+                  ),
+                  child: const Text('Print Bar',
+                      style: TextStyle(fontSize: 12, color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: globalState.isLoading.value
+                      ? null
+                      : () async {
+                          await _runWithGlobalLoading(() => printReceipt(
+                                userWifi.value,
+                                dateOrder.value,
+                              ));
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    disabledBackgroundColor: const Color(0xffBDBDBD),
+                  ),
+                  child: const Text('Print Copy',
+                      style: TextStyle(fontSize: 12, color: Colors.white)),
+                ),
+              ],
+            )),
         actions: [
           SizedBox(
             width: double.infinity,
@@ -1058,14 +1077,26 @@ class CasierController extends GetxController with GetTickerProviderStateMixin {
     ]);
   }
 
+  _getTimeTimer() {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      _getTime();
+    });
+  }
+
+  _getTime() {
+    DateTime now = DateTime.now();
+    String formattedDate =
+        DateFormat('EEEE, d MMMM yyyy HH:mm:ss', 'id_ID').format(now);
+    today.value = formattedDate;
+  }
+
   @override
   void onInit() {
     super.onInit();
     tabController = TabController(length: listTab.length, vsync: this);
     getAllData();
     initializeDateFormatting();
-    DateTime now = DateTime.now();
-    today.value = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(now);
+    _getTimeTimer();
   }
 
   @override

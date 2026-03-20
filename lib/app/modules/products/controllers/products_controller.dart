@@ -7,7 +7,7 @@ import 'package:pos_getx/app/data/repository/categories_repository.dart';
 import 'package:pos_getx/app/data/repository/products_repository.dart';
 import 'package:pos_getx/app/service/global_state.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 import 'package:pos_getx/app/widgets/snackbar.dart';
 
 class ProductsController extends GetxController
@@ -160,7 +160,9 @@ class ProductsController extends GetxController
     );
   }
 
-  void createCategory() async {
+  Future<void> createCategory() async {
+    if (globalState.isLoading.value) return;
+
     if (categoryController.text.isEmpty &&
         categoryIconController.text.isEmpty) {
       categoryError.value = 'Category tidak boleh kosong';
@@ -187,13 +189,14 @@ class ProductsController extends GetxController
     categoryError.value = '';
     iconError.value = '';
     globalState.isLoading.value = true;
-    await CategoriesRepository.createCategory(
-      name: categoryController.text,
-      icon: categoryIconController.text,
-    ).then((value) {
-      globalState.isLoading.value = false;
+    try {
+      final value = await CategoriesRepository.createCategory(
+        name: categoryController.text,
+        icon: categoryIconController.text,
+      );
+
       if (value) {
-        getAllData();
+        await getAllData();
         categoryController.clear();
         categoryIconController.clear();
         Get.back();
@@ -202,7 +205,11 @@ class ProductsController extends GetxController
         categoryError.value = 'Category sudah ada';
         showSnackbar("Error", "Category gagal ditambahkan");
       }
-    });
+    } catch (_) {
+      showSnackbar("Error", "Terjadi kesalahan saat menambah category");
+    } finally {
+      globalState.isLoading.value = false;
+    }
   }
 
   Future<void> getAllData() async {

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:pos_getx/app/data/model/menu_model.dart';
 import 'package:pos_getx/app/data/model/variant_model.dart';
 import 'package:pos_getx/app/style/app_colors.dart';
-import 'package:pos_getx/app/widgets/Input_field.dart';
+import 'package:pos_getx/app/widgets/input_field.dart';
 import '../controllers/casier_form_controller.dart';
 
 class CasierFormView extends GetView<CasierFormController> {

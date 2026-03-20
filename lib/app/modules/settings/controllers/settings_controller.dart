@@ -37,7 +37,9 @@ class SettingsController extends GetxController {
     }
   }
 
-  void saveSettings() async {
+  Future<void> saveSettings() async {
+    if (globalState.isLoading.value) return;
+
     if (storeNameController.text.isEmpty &&
         storeAddressController.text.isEmpty) {
       nameError.value = 'Nama Toko tidak boleh kosong';
@@ -67,13 +69,18 @@ class SettingsController extends GetxController {
     nameError.value = '';
     addressError.value = '';
     globalState.isLoading.value = true;
-    final response = await SettingsRepository.updateSettings(settings);
-    if (response) {
-      showSnackbar('Success', 'Settings updated successfully');
-    } else {
+    try {
+      final response = await SettingsRepository.updateSettings(settings);
+      if (response) {
+        showSnackbar('Success', 'Settings updated successfully');
+      } else {
+        showSnackbar('Error', 'Failed to update settings');
+      }
+    } catch (_) {
       showSnackbar('Error', 'Failed to update settings');
+    } finally {
+      globalState.isLoading.value = false;
     }
-    globalState.isLoading.value = false;
   }
 
   Future<void> printReceipt(String macAddress) async {

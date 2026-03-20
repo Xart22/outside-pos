@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
 import 'package:get/get.dart';
 import 'package:pos_getx/app/modules/casier/views/casier_view.dart';
@@ -35,6 +36,13 @@ class HomeView extends GetView<HomeController> {
                     topRight: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x44000000),
+                      blurRadius: 18,
+                      offset: Offset(6, 0),
+                    ),
+                  ],
                 ),
                 child: _sideMenu(),
               ),
@@ -48,10 +56,20 @@ class HomeView extends GetView<HomeController> {
           ),
           Obx(
             () => controller.globalState.isLoading.value
-                ? Container(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    child: const Center(
-                      child: Loading(size: 50),
+                ? Positioned.fill(
+                    child: AbsorbPointer(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.30),
+                          child: const Center(
+                            child: Loading(
+                              size: 50,
+                              label: 'Memproses...',
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   )
                 : const SizedBox.shrink(),
